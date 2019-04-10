@@ -11,8 +11,8 @@ class ListMeetings extends StatelessWidget {
     List<String> items = ["100","200","800","1.2"];
 
     return Scaffold(
-      appBar: AppBar(title: Text('Join To Eat')),
-      backgroundColor: Colors.orange,
+      appBar: AppBar(title: Text('Join To Eat'), backgroundColor: Colors.orange),
+      backgroundColor: Colors.white70,
       body: BlocBuilder<MeetingEvent, int>(
         bloc: _counterBloc,
         builder: (BuildContext context, int count) {
