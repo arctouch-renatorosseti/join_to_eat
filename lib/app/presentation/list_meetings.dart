@@ -1,96 +1,117 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:join_to_eat/app/meeting/meeting_bloc.dart';
 import 'package:join_to_eat/app/meeting/meeting_event.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+//import 'package:location/location.dart' as LocationManager;
+//import 'package:location/location.dart';
 
-class ListMeetings extends StatelessWidget {
+class ListMeetings extends StatefulWidget {
+  @override
+  State<StatefulWidget> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<ListMeetings> {
+  Completer<GoogleMapController> _controller = Completer();
+
+  static const LatLng _center = const LatLng(27.5949, 48.5482);
+
+  final Set<Marker> _markers = {};
+
+  LatLng _lastMapPosition = _center;
+
+  MapType _currentMapType = MapType.normal;
+
+  void _onMapTypeButtonPressed() {
+    setState(() {
+      _currentMapType = _currentMapType == MapType.normal
+          ? MapType.satellite
+          : MapType.normal;
+    });
+  }
+
+  void _onAddMarkerButtonPressed() {
+    setState(() {
+      _markers.add(Marker(
+        // This marker id can be anything that uniquely identifies each marker.
+        markerId: MarkerId(_lastMapPosition.toString()),
+        position: _lastMapPosition,
+        infoWindow: InfoWindow(
+          title: 'Really cool place',
+          snippet: '5 Star Rating',
+        ),
+        icon: BitmapDescriptor.defaultMarker,
+      ));
+    });
+  }
+
+  void _onCameraMove(CameraPosition position) {
+    _lastMapPosition = position.target;
+  }
+
+  void _onMapCreated(GoogleMapController controller) {
+    _controller.complete(controller);
+  }
+
   @override
   Widget build(BuildContext context) {
-    final MeetingBloc _counterBloc = BlocProvider.of<MeetingBloc>(context);
-    List<String> items = ["100","200","800","1.2"];
-
-    return Scaffold(
-      appBar: AppBar(title: Text('Join To Eat'), backgroundColor: Colors.orange),
-      backgroundColor: Colors.white70,
-      body: BlocBuilder<MeetingEvent, int>(
-        bloc: _counterBloc,
-        builder: (BuildContext context, int count) {
-          items.add("$count");
-
-          return ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (BuildContext _context, int i) {
-
-
-                return _buildRow(items[i]);
-              }
-          );
-        },
-      ),
-      floatingActionButton: Column(
-        crossAxisAlignment: CrossAxisAlignment.end,
-        mainAxisAlignment: MainAxisAlignment.end,
-        children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () {
-                _counterBloc.dispatch(MeetingEvent.increment);
-              },
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 5.0),
-            child: FloatingActionButton(
-              child: Icon(Icons.remove),
-              onPressed: () {
-                _counterBloc.dispatch(MeetingEvent.decrement);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildRow(String text) {
-    return Card(
-      semanticContainer: true,
-      color: Colors.white,
-      clipBehavior: Clip.antiAliasWithSaveLayer,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
+    return MaterialApp(
+      home: Scaffold(
+        body: Stack(
           children: <Widget>[
+            GoogleMap(
+              onMapCreated: _onMapCreated,
+              myLocationEnabled: true,
+              initialCameraPosition: CameraPosition(
+                target: (getCurrentLocation() != null) ? getCurrentLocation() : _center,
+                zoom: 11.0,
+              ),
+              mapType: _currentMapType,
+              markers: _markers,
+              onCameraMove: _onCameraMove,
+            ),
             Padding(
-              padding: EdgeInsets.all(10.0),
-              child: CircleAvatar(
-                backgroundImage: AssetImage('assets/meal_01.jpg'),
-                radius: 70,
-
+              padding: const EdgeInsets.all(16.0),
+              child: Align(
+                alignment: Alignment.topRight,
+                child: Column(
+                  children: <Widget> [
+                    FloatingActionButton(
+                      onPressed: _onMapTypeButtonPressed,
+                      materialTapTargetSize: MaterialTapTargetSize.padded,
+                      backgroundColor: Colors.green,
+                      child: const Icon(Icons.map, size: 36.0),
+                    ),
+                    SizedBox(height: 16.0),
+                    FloatingActionButton(
+                      onPressed: _onAddMarkerButtonPressed,
+                      materialTapTargetSize: MaterialTapTargetSize.padded,
+                      backgroundColor: Colors.green,
+                      child: const Icon(Icons.add_location, size: 36.0),
+                    ),
+                  ],
+                ),
               ),
             ),
-            Padding(
-                padding: EdgeInsets.all(10.0),
-                child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    textDirection: TextDirection.rtl,
-                    children: <Widget>[
-                      Text("Renato Aquiles Rosseti", style: TextStyle(color: Colors.grey, fontSize: 20)),
-                      Text("$text m", style: TextStyle(color: Colors.grey, fontSize: 20))
-                    ]
-
-                )
-            )
           ],
         ),
-        
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.0),
       ),
-      elevation: 5,
-      margin: EdgeInsets.all(10),
     );
   }
+
+  LatLng getCurrentLocation() {
+//    var location = new Location();
+//
+//    location.onLocationChanged().listen((LocationData currentLocation) {
+//      print(currentLocation.latitude);
+//      print(currentLocation.longitude);
+//      return LatLng(currentLocation.latitude,currentLocation.longitude);
+//    });
+    return null;
+  }
+
+
 }
