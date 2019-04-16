@@ -1,7 +1,7 @@
-import 'package:equatable/equatable.dart';
+
 import 'package:join_to_eat/app/model/meeting.dart';
 
-abstract class MeetingState extends Equatable {}
+abstract class MeetingState {}
 
 class UninitializedState extends MeetingState {
   @override

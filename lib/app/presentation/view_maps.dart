@@ -6,24 +6,58 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:join_to_eat/app/meeting/meeting_bloc.dart';
 import 'package:join_to_eat/app/meeting/meeting_event.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-//import 'package:location/location.dart' as LocationManager;
-//import 'package:location/location.dart';
+import 'package:location/location.dart';
+//import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 
-class ListMeetings extends StatefulWidget {
+class ViewMaps extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _MyAppState();
+  State<StatefulWidget> createState() => _MapBody();
 }
 
-class _MyAppState extends State<ListMeetings> {
+class _MapBody extends State<ViewMaps> {
+
   Completer<GoogleMapController> _controller = Completer();
 
-  static const LatLng _center = const LatLng(27.5949, 48.5482);
+  GoogleMapController mapController;
+
+  static const LatLng _center = const LatLng(-27.5949, -48.5482);
 
   final Set<Marker> _markers = {};
 
   LatLng _lastMapPosition = _center;
 
   MapType _currentMapType = MapType.normal;
+
+  Map<String, double> userLocation;
+
+//   _getLocation() async {
+//    Position position = await Geolocator().getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+//    return position;
+//  }
+
+  @override
+  void initState() {
+    print("Init state");
+    _getLocation();
+    super.initState();
+  }
+
+   _getLocation() async {
+    var location = new Location();
+    var currentLocation;
+    try {
+      currentLocation = await location.getLocation();
+
+      print("locationLatitude: ${currentLocation["latitude"]}");
+      print("locationLongitude: ${currentLocation["longitude"]}");
+      setState(
+              () {}); //rebuild the widget after getting the current location of the user
+    } on Exception {
+      currentLocation = null;
+    }
+    return currentLocation;
+  }
 
   void _onMapTypeButtonPressed() {
     setState(() {
@@ -66,7 +100,7 @@ class _MyAppState extends State<ListMeetings> {
               onMapCreated: _onMapCreated,
               myLocationEnabled: true,
               initialCameraPosition: CameraPosition(
-                target: (getCurrentLocation() != null) ? getCurrentLocation() : _center,
+                target: _center,
                 zoom: 11.0,
               ),
               mapType: _currentMapType,
@@ -100,17 +134,6 @@ class _MyAppState extends State<ListMeetings> {
         ),
       ),
     );
-  }
-
-  LatLng getCurrentLocation() {
-//    var location = new Location();
-//
-//    location.onLocationChanged().listen((LocationData currentLocation) {
-//      print(currentLocation.latitude);
-//      print(currentLocation.longitude);
-//      return LatLng(currentLocation.latitude,currentLocation.longitude);
-//    });
-    return null;
   }
 
 
