@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:join_to_eat/app/main_app.dart';
 import 'package:join_to_eat/app/meeting/meeting_bloc.dart';
 import 'package:join_to_eat/app/meeting/meeting_event.dart';
-import 'package:join_to_eat/app/presentation/list_meetings.dart';
+import 'package:join_to_eat/app/presentation/view_maps.dart';
+import 'package:join_to_eat/app/presentation/list_schedules.dart';
+import 'package:join_to_eat/app/presentation/form_profile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 void main() {
@@ -15,6 +17,7 @@ void main() {
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);
+
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -33,16 +36,43 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final MeetingBloc _meetingBloc = MeetingBloc();
-
+  int _selectedIndex = 0;
+  final _widgetOptions = [
+    ViewMaps(),
+    FormProfile(),
+    ListSchedules()
+  ];
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: BlocProvider<MeetingBloc>(
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Join To Eat'),
+      ),
+      body: BlocProvider<MeetingBloc>(
         bloc: _meetingBloc,
-        child: ListMeetings(),
+        child: _widgetOptions.elementAt(_selectedIndex),
+
+
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.orange,
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.language), title: Text('Network')),
+          BottomNavigationBarItem(icon: Icon(Icons.add), title: Text('Add event')),
+          BottomNavigationBarItem(icon: Icon(Icons.notifications), title: Text('events')),
+        ],
+        currentIndex: _selectedIndex,
+        fixedColor: Colors.white,
+        onTap: _onItemTapped,
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
   }
 
   @override
