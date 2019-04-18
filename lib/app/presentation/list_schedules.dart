@@ -38,7 +38,7 @@ class ListSchedules extends StatelessWidget {
           children: <Widget>[
             Center(
               child: IconButton(
-                icon: Icon(Icons.location_on, size: 50),
+                icon: Icon(Icons.location_on, size: 30),
                 tooltip: 'Increase volume by 10',
                 onPressed: () {
 
@@ -46,13 +46,13 @@ class ListSchedules extends StatelessWidget {
               ),
             ),
             Padding(
-                padding: EdgeInsets.all(20.0),
+                padding: EdgeInsets.all(15.0),
                 child: Column(
                     crossAxisAlignment: CrossAxisAlignment.end,
                     textDirection: TextDirection.rtl,
                     children: <Widget>[
-                      Text("Almoço com Renato às 12:00h", style: TextStyle(color: Colors.grey, fontSize: 20)),
-                      Text("Local: No 4 estações.", style: TextStyle(color: Colors.grey, fontSize: 20))
+                      Text("Almoço com Renato às 12:00h", style: TextStyle(color: Colors.grey, fontSize: 16)),
+                      Text("Local: No 4 estações.", style: TextStyle(color: Colors.grey, fontSize: 16))
                     ]
 
                 )

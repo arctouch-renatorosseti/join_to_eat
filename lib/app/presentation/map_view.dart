@@ -9,15 +9,15 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 //import 'package:location/location.dart' as LocationManager;
 //import 'package:location/location.dart';
 
-class ListMeetings extends StatefulWidget {
+class MapView extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _MyAppState();
+  State<StatefulWidget> createState() => _MapViewState();
 }
 
-class _MyAppState extends State<ListMeetings> {
+class _MapViewState extends State<MapView> {
   Completer<GoogleMapController> _controller = Completer();
 
-  static const LatLng _center = const LatLng(27.5949, 48.5482);
+  static const LatLng _center = const LatLng(-27.5949, -48.5482);
 
   final Set<Marker> _markers = {};
 
@@ -58,9 +58,7 @@ class _MyAppState extends State<ListMeetings> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Stack(
+    return Stack(
           children: <Widget>[
             GoogleMap(
               onMapCreated: _onMapCreated,
@@ -97,8 +95,6 @@ class _MyAppState extends State<ListMeetings> {
               ),
             ),
           ],
-        ),
-      ),
     );
   }
 

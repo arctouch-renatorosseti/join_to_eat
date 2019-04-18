@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:join_to_eat/app/main_app.dart';
 import 'package:join_to_eat/app/meeting/meeting_bloc.dart';
 import 'package:join_to_eat/app/meeting/meeting_event.dart';
-import 'package:join_to_eat/app/presentation/list_meetings.dart';
+import 'package:join_to_eat/app/presentation/map_view.dart';
 import 'package:join_to_eat/app/presentation/list_schedules.dart';
 import 'package:join_to_eat/app/presentation/form_profile.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +38,7 @@ class _MyHomePageState extends State<MyHomePage> {
   final MeetingBloc _meetingBloc = MeetingBloc();
   int _selectedIndex = 0;
   final _widgetOptions = [
-    ListMeetings(),
+    MapView(),
     FormProfile(),
     ListSchedules()
   ];
