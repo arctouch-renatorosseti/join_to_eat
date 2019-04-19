@@ -4,6 +4,7 @@ class User {
   String lastName;
   String nickname;
   String email;
+  String generatedKey;
   String phone;
   String jobTitle;
   String skills;
