@@ -78,7 +78,7 @@ class _SignInForm extends State<SignInWidget> {
   _getButton() {
     return FloatingActionButton(
       child: Icon(Icons.add),
-//      onPressed: () => _bloc.su,
+      onPressed: () => _bloc.dispatch(UserEvent.submit),
     );
   }
 
