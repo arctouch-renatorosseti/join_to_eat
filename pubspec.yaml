@@ -14,7 +14,7 @@ description: A social join to eat app which will find the perfect eating compani
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -35,6 +35,9 @@ dependencies:
   google_maps_flutter: ^0.5.6
   cloud_firestore: ^0.9.13+1
   firebase_ml_vision: ^0.7.0
+  path_provider: ^0.5.0+1
+  json_serializable: ^2.2.1
+  kiwi: ^0.1.0
 
 dev_dependencies:
   flutter_test:
@@ -53,6 +56,7 @@ flutter:
   uses-material-design: true
   assets:
   - assets/
+  - assets/data/
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
