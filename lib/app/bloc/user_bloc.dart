@@ -1,20 +1,27 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:join_to_eat/app/bloc/users_event.dart';
+import 'package:join_to_eat/app/bloc/user_event.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
 import 'package:join_to_eat/app/repository/repository.dart';
+import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:rxdart/rxdart.dart';
+
+enum FormMode { login, signUp, resetPassword }
 
 class UserBloc extends Bloc<UserEvent, int> {
   final _repository = Repository();
   final _email = BehaviorSubject<String>();
   final _password = BehaviorSubject<String>();
+
   UsersList _usersList;
 
-  Observable<String> get email => _email.stream.transform(_validateEmail);
-
-  Observable<String> get password => _password.stream.transform(_validatePassword);
+  UserBloc() {
+    fetchUsers().then((onValue) {
+      _usersList = onValue;
+      print("Users length: ${onValue.users.length}");
+    });
+  }
 
   @override
   int get initialState => 0;
@@ -25,36 +32,13 @@ class UserBloc extends Bloc<UserEvent, int> {
       case UserEvent.signed:
         yield currentState - 1;
         break;
-      case UserEvent.signIn:
+      case UserEvent.submit:
         yield currentState + 1;
         break;
     }
   }
 
-  UserBloc() {
-    fetchUsers().then((onValue) {
-      _usersList = onValue;
-      print("Users length: ${onValue.users.length}");
-    });
-  }
-
-  final _validateEmail = StreamTransformer<String, String>.fromHandlers(handleData: (email, sink) {
-    if (email.contains('@')) {
-      sink.add(email);
-    } else {
-      sink.addError("Email not valide.");
-    }
-  });
-
-  final _validatePassword = StreamTransformer<String, String>.fromHandlers(
-      handleData: (password, sink) {
-        if (password.length > 3) {
-          sink.add(password);
-        } else {
-          sink.addError("Error to validate signin.");
-        }
-      });
-
+  String validateEmail(String value) => value.isEmpty ? Strings.appName : null;
 
   bool validateFields() {
     if (_email.value != null &&
@@ -71,6 +55,10 @@ class UserBloc extends Bloc<UserEvent, int> {
 
   Future<UsersList> fetchUsers() {
     return _repository.getUsers();
+  }
+
+  void submit() {
+
   }
 
 
