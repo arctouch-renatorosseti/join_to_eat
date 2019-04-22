@@ -1,4 +1,3 @@
-//TODO: implement localization
 class Strings {
   static const String appName = 'Join to eat';
   static const String email = 'Email from your PingBoard profile';

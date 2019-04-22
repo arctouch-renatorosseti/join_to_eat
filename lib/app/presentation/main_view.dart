@@ -5,10 +5,9 @@ import 'package:join_to_eat/app/presentation/map_view.dart';
 
 class MainView extends StatefulWidget {
 
+  MainView({Key key}) : super(key: key);
   @override
   State<StatefulWidget> createState() => _MainViewState();
-
-
 }
 
 class _MainViewState extends State<MainView> {
@@ -18,7 +17,6 @@ class _MainViewState extends State<MainView> {
     FormProfile(),
     ListSchedules()
   ];
-
 
   @override
   Widget build(BuildContext context) {
@@ -42,5 +40,10 @@ class _MainViewState extends State<MainView> {
     );
   }
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 }
 //  _widgetOptions.elementAt(_selectedIndex)

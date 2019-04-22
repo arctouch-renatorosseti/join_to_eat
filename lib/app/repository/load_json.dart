@@ -1,7 +1,6 @@
 import 'dart:async' show Future;
 import 'dart:convert';
 import 'package:flutter/services.dart' show rootBundle;
-import 'package:join_to_eat/app/model/user.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
 
   Future<String> _loadUsersAsset() async {

@@ -1,32 +1,35 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:join_to_eat/app/bloc/user_event.dart';
+import 'package:join_to_eat/app/bloc/auth_event.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
 import 'package:join_to_eat/app/repository/repository.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
+import 'package:join_to_eat/app/utils/routes.dart';
 import 'package:rxdart/rxdart.dart';
 
 enum FormMode { email, securityKey, mainScreen }
 
-class UserState {
+class AuthState {
   FormMode field;
   String errorMessage;
-  UserState(FormMode field, String errorMessage) {
+  String route;
+  AuthState(FormMode field, String errorMessage) {
     this.field = field;
     this.errorMessage = errorMessage;
+//    this.route = route;
   }
 }
 
 
-class UserBloc extends Bloc<UserEvent, UserState> {
+class AuthBloc extends Bloc<UserEvent, AuthState> {
   final _repository = Repository();
   String _email;
   String _password;
 
   UsersList _usersList;
 
-  UserBloc() {
+  AuthBloc() {
     fetchUsers().then((onValue) {
       _usersList = onValue;
       print("Users length: ${onValue.users.length}");
@@ -34,26 +37,28 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   @override
-  UserState get initialState => UserState(FormMode.email, "");
+  AuthState get initialState => AuthState(FormMode.email, "");
 
   @override
-  Stream<UserState> mapEventToState(UserEvent event) async* {
+  Stream<AuthState> mapEventToState(UserEvent event) async* {
     switch (event) {
       case UserEvent.submit:
         if(validateFields()) {
           switch(currentState.field) {
             case FormMode.email:
-              yield UserState(FormMode.securityKey,"");
+              yield AuthState(FormMode.securityKey,"");
               break;
             case FormMode.securityKey:
-              yield UserState(FormMode.mainScreen,"");
+              AuthState userState = AuthState(FormMode.mainScreen,"");
+              userState.route = Routes.main;
+              yield userState;
               break;
             case FormMode.mainScreen:
               print("Main Screen");
               break;
           }
         } else {
-          yield UserState(currentState.field ,(currentState.field == FormMode.email) ? "Invalid email" : "Invalid security key");
+          yield AuthState(currentState.field ,(currentState.field == FormMode.email) ? "Invalid email" : "Invalid security key");
         }
         break;
     }

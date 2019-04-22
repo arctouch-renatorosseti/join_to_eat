@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:join_to_eat/app/bloc/user_bloc.dart';
-import 'package:join_to_eat/app/bloc/user_event.dart';
+import 'package:join_to_eat/app/bloc/auth_bloc.dart';
+import 'package:join_to_eat/app/bloc/auth_event.dart';
+import 'package:join_to_eat/app/presentation/main_view.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
-import 'package:join_to_eat/app/utils/widgets/info_alert.dart';
-import 'package:join_to_eat/app/utils/widgets/loading_wrapper.dart';
 import 'package:join_to_eat/app/utils/widgets/routing_wrapper.dart';
 
 class SignInWidget extends StatefulWidget {
@@ -15,17 +14,17 @@ class SignInWidget extends StatefulWidget {
 
 class _SignInForm extends State<SignInWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _bloc = UserBloc();
+  final _bloc = AuthBloc();
 
   @override
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(20.0),
-          child: BlocBuilder<UserEvent, UserState>(
+          child: BlocBuilder<UserEvent, AuthState>(
               bloc: _bloc,
               builder: (context, state) => Container(
                   padding: EdgeInsets.all(16.0),
-                  child: Form(
+                  child: (state.field != FormMode.mainScreen) ? Form(
                     key: _formKey,
                     child: ListView(
                       shrinkWrap: true,
@@ -34,27 +33,22 @@ class _SignInForm extends State<SignInWidget> {
                             validator: _bloc.validateEmail,
                             onSaved: _bloc.onEmailSaved,
                             state: state),
-//                          title: TextFormField (
-//                            maxLines: 1,
-//                            keyboardType: TextInputType.emailAddress,
-//                            autofocus: false,
-//                            decoration: InputDecoration(
-//                              hintText: "Email from PingBoard",
-//                              errorText: "Email ${state.message}",
-//                            ),
-//                            validator: _bloc.validateEmail,
-//                            onSaved: (String email) {
-//                              print('saved $email');
-//                              _bloc.onEmailSaved(email);
-//                            },
-//                          ),
-
                         _getButton(),
                       ],
                     ),
-                  ))
+                  ) : RoutingWrapper(
+                      route: state.route)
+                  )
           ),
     );
+  }
+
+  Widget _navigateToMainScreen() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => MainView()),
+    );
+    return Text("MainView");
   }
 
   @override
@@ -80,7 +74,7 @@ class _SignInForm extends State<SignInWidget> {
 class CustomFieldSignIn extends StatelessWidget {
   final Function(String) validator;
   final Function(String) onSaved;
-  final UserState state;
+  final AuthState state;
 
   const CustomFieldSignIn({Key key, @required this.validator, @required this.onSaved, @required this.state})
       : super(key: key);
