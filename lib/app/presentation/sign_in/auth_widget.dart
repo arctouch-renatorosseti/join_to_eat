@@ -7,6 +7,9 @@ import 'package:join_to_eat/app/presentation/main_view.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/widgets/routing_wrapper.dart';
 
+
+
+
 class SignInWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _SignInForm();
@@ -15,6 +18,14 @@ class SignInWidget extends StatefulWidget {
 class _SignInForm extends State<SignInWidget> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _bloc = AuthBloc();
+
+  TextEditingController _textFieldController;
+
+  @override
+  void initState() {
+    _textFieldController = TextEditingController();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -31,10 +42,12 @@ class _SignInForm extends State<SignInWidget> {
                 shrinkWrap: true,
                 children: <Widget>[
                   CustomFieldSignIn(
-                      validator: _bloc.validateEmail,
-                      onSaved: _bloc.onEmailSaved,
-                      state: state),
-                  _getButton(),
+                      validator: _bloc.validateField,
+                      onSaved: (state.field == FormMode.email) ? _bloc.onEmailSaved : _bloc.onSecurityKeySaved,
+                      state: state,
+                      textFieldController: _textFieldController
+                  ),
+                  _getButton(state),
                 ],
               ),
             ) : MainView()
@@ -57,9 +70,13 @@ class _SignInForm extends State<SignInWidget> {
     super.dispose();
   }
 
-  _getButton() {
-    return FloatingActionButton(
-        child: Icon(Icons.add),
+  _getButton(AuthState state) {
+    if(state.field == FormMode.securityKey) {
+      _textFieldController.clear();
+    }
+    return RaisedButton(
+        color: Colors.orange,
+        child: Text("Submit"),
         onPressed: () {
           final form = _formKey.currentState;
           if (form.validate()) {
@@ -75,8 +92,9 @@ class CustomFieldSignIn extends StatelessWidget {
   final Function(String) validator;
   final Function(String) onSaved;
   final AuthState state;
+  final TextEditingController textFieldController;
 
-  const CustomFieldSignIn({Key key, @required this.validator, @required this.onSaved, @required this.state})
+  const CustomFieldSignIn({Key key, @required this.validator, @required this.onSaved, @required this.state, this.textFieldController})
       : super(key: key);
 
   @override
@@ -85,7 +103,7 @@ class CustomFieldSignIn extends StatelessWidget {
     child: TextFormField(
       maxLines: 1,
       keyboardType: TextInputType.emailAddress,
-      autofocus: false,
+      controller: textFieldController,
       decoration: InputDecoration(
           hintText: (state.field == FormMode.email) ?  Strings.email : Strings.securityKey,
           icon: Icon((state.field == FormMode.email) ? Icons.mail : Icons.lock, color: Colors.grey),

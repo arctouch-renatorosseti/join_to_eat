@@ -5,6 +5,7 @@ class Strings {
   static const String login = 'Entrar';
   static const String createAnAccount = 'Criar uma conta';
   static const String unknownError = 'Erro inesperado, tente novamente mais tarde.';
+  static const String emptyFieldError = 'Field can`t be empty.';
   static const String errorUserNotFound = 'Email não encontrado.';
   static const String ok = 'ok';
 }
