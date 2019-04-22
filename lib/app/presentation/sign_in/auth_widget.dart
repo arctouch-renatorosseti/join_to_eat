@@ -18,28 +18,28 @@ class _SignInForm extends State<SignInWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-        padding: EdgeInsets.all(20.0),
-          child: BlocBuilder<UserEvent, AuthState>(
-              bloc: _bloc,
-              builder: (context, state) => Container(
-                  padding: EdgeInsets.all(16.0),
-                  child: (state.field != FormMode.mainScreen) ? Form(
-                    key: _formKey,
-                    child: ListView(
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        CustomFieldSignIn(
-                            validator: _bloc.validateEmail,
-                            onSaved: _bloc.onEmailSaved,
-                            state: state),
-                        _getButton(),
-                      ],
-                    ),
-                  ) : RoutingWrapper(
-                      route: state.route)
-                  )
-          ),
+    return Scaffold(
+      appBar: AppBar(title: Text('Join To Eat.')),
+      body: BlocBuilder<UserEvent, AuthState>(
+        bloc: _bloc,
+        builder: (context, state) => Container(
+
+            child: (state.field != FormMode.mainScreen) ? Form(
+              key: _formKey,
+              child: ListView(
+                padding: EdgeInsets.all(16.0),
+                shrinkWrap: true,
+                children: <Widget>[
+                  CustomFieldSignIn(
+                      validator: _bloc.validateEmail,
+                      onSaved: _bloc.onEmailSaved,
+                      state: state),
+                  _getButton(),
+                ],
+              ),
+            ) : MainView()
+        ),
+      ),
     );
   }
 
