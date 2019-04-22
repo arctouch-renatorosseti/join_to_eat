@@ -11,9 +11,8 @@ class UsersList extends Equatable {
   });
 
   factory UsersList.fromJson(List<dynamic> parsedJson) {
-
     List<User> users = List<User>();
-    users = parsedJson.map((i)=>User.fromJson(i)).toList();
+    users = parsedJson.map((i) => User.fromJson(i)).toList();
     return UsersList(
       users: users,
     );

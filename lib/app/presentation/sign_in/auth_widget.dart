@@ -7,9 +7,6 @@ import 'package:join_to_eat/app/presentation/main_view.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/widgets/routing_wrapper.dart';
 
-
-
-
 class SignInWidget extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _SignInForm();
@@ -34,24 +31,25 @@ class _SignInForm extends State<SignInWidget> {
       body: BlocBuilder<UserEvent, AuthState>(
         bloc: _bloc,
         builder: (context, state) => Container(
-
-            child: (state.field != FormMode.mainScreen) ? Form(
-              key: _formKey,
-              child: ListView(
-                padding: EdgeInsets.all(16.0),
-                shrinkWrap: true,
-                children: <Widget>[
-                  CustomFieldSignIn(
-                      validator: _bloc.validateField,
-                      onSaved: (state.field == FormMode.email) ? _bloc.onEmailSaved : _bloc.onSecurityKeySaved,
-                      state: state,
-                      textFieldController: _textFieldController
-                  ),
-                  _getButton(state),
-                ],
-              ),
-            ) : MainView()
-        ),
+            child: (state.field != FormMode.mainScreen)
+                ? Form(
+                    key: _formKey,
+                    child: ListView(
+                      padding: EdgeInsets.all(16.0),
+                      shrinkWrap: true,
+                      children: <Widget>[
+                        CustomFieldSignIn(
+                            validator: _bloc.validateField,
+                            onSaved: (state.field == FormMode.email)
+                                ? _bloc.onEmailSaved
+                                : _bloc.onSecurityKeySaved,
+                            state: state,
+                            textFieldController: _textFieldController),
+                        _getButton(state),
+                      ],
+                    ),
+                  )
+                : MainView()),
       ),
     );
   }
@@ -71,7 +69,7 @@ class _SignInForm extends State<SignInWidget> {
   }
 
   _getButton(AuthState state) {
-    if(state.field == FormMode.securityKey) {
+    if (state.field == FormMode.securityKey) {
       _textFieldController.clear();
     }
     return RaisedButton(
@@ -83,8 +81,7 @@ class _SignInForm extends State<SignInWidget> {
             form.save();
             _bloc.dispatch(UserEvent.submit);
           }
-        }
-    );
+        });
   }
 }
 
@@ -94,24 +91,31 @@ class CustomFieldSignIn extends StatelessWidget {
   final AuthState state;
   final TextEditingController textFieldController;
 
-  const CustomFieldSignIn({Key key, @required this.validator, @required this.onSaved, @required this.state, this.textFieldController})
+  const CustomFieldSignIn(
+      {Key key,
+      @required this.validator,
+      @required this.onSaved,
+      @required this.state,
+      this.textFieldController})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) => Padding(
-    padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
-    child: TextFormField(
-      maxLines: 1,
-      keyboardType: TextInputType.emailAddress,
-      controller: textFieldController,
-      decoration: InputDecoration(
-          hintText: (state.field == FormMode.email) ?  Strings.email : Strings.securityKey,
-          icon: Icon((state.field == FormMode.email) ? Icons.mail : Icons.lock, color: Colors.grey),
-          errorText: state.errorMessage
-
-      ),
-      validator: validator,
-      onSaved: onSaved,
-    ),
-  );
+        padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
+        child: TextFormField(
+          maxLines: 1,
+          keyboardType: TextInputType.emailAddress,
+          controller: textFieldController,
+          decoration: InputDecoration(
+              hintText: (state.field == FormMode.email)
+                  ? Strings.email
+                  : Strings.securityKey,
+              icon: Icon(
+                  (state.field == FormMode.email) ? Icons.mail : Icons.lock,
+                  color: Colors.grey),
+              errorText: state.errorMessage),
+          validator: validator,
+          onSaved: onSaved,
+        ),
+      );
 }
