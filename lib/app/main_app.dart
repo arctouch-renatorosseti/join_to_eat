@@ -1,17 +1,10 @@
-import 'dart:convert';
-
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:join_to_eat/app/bloc/user_bloc.dart';
-import 'package:join_to_eat/app/bloc/user_bloc_provider.dart';
-import 'package:join_to_eat/app/model/user.dart';
-import 'package:join_to_eat/app/model/users_list.dart';
 import 'package:join_to_eat/app/presentation/map_view.dart';
 import 'package:join_to_eat/app/presentation/list_schedules.dart';
 import 'package:join_to_eat/app/presentation/form_profile.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:join_to_eat/app/presentation/sign_in/signin_widget.dart';
-import 'package:join_to_eat/app/repository/repository.dart';
 
 class MainApp extends StatelessWidget {
   // This widget is the root of your application.
