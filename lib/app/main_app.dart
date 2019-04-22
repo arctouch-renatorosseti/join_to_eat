@@ -4,7 +4,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:join_to_eat/app/bloc/user_bloc.dart';
 import 'package:join_to_eat/app/bloc/user_bloc_provider.dart';
-import 'package:join_to_eat/app/meeting/meeting_bloc.dart';
 import 'package:join_to_eat/app/model/user.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
 import 'package:join_to_eat/app/presentation/map_view.dart';
@@ -49,7 +48,6 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final MeetingBloc _meetingBloc = MeetingBloc();
   final UserBloc _usersBloc = UserBloc();
 
   int _selectedIndex = 0;
@@ -112,7 +110,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
-    _meetingBloc.dispose();
 
     super.dispose();
   }

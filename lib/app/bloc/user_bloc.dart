@@ -7,12 +7,22 @@ import 'package:join_to_eat/app/repository/repository.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:rxdart/rxdart.dart';
 
-enum FormMode { login, signUp, resetPassword }
+enum FormMode { email, securityKey, mainScreen }
 
-class UserBloc extends Bloc<UserEvent, int> {
+class UserState {
+  FormMode field;
+  String errorMessage;
+  UserState(FormMode field, String errorMessage) {
+    this.field = field;
+    this.errorMessage = errorMessage;
+  }
+}
+
+
+class UserBloc extends Bloc<UserEvent, UserState> {
   final _repository = Repository();
-  final _email = BehaviorSubject<String>();
-  final _password = BehaviorSubject<String>();
+  String _email;
+  String _password;
 
   UsersList _usersList;
 
@@ -24,34 +34,38 @@ class UserBloc extends Bloc<UserEvent, int> {
   }
 
   @override
-  int get initialState => 0;
+  UserState get initialState => UserState(FormMode.email, "");
 
   @override
-  Stream<int> mapEventToState(UserEvent event) async* {
+  Stream<UserState> mapEventToState(UserEvent event) async* {
     switch (event) {
-      case UserEvent.signed:
-        yield currentState - 1;
-        break;
       case UserEvent.submit:
-        yield currentState + 1;
+        if(validateFields()) {
+          switch(currentState.field) {
+            case FormMode.email:
+              yield UserState(FormMode.securityKey,"");
+              break;
+            case FormMode.securityKey:
+              yield UserState(FormMode.mainScreen,"");
+              break;
+            case FormMode.mainScreen:
+              print("Main Screen");
+              break;
+          }
+        } else {
+          yield UserState(currentState.field ,(currentState.field == FormMode.email) ? "Invalid email" : "Invalid security key");
+        }
         break;
     }
   }
 
   String validateEmail(String value) => value.isEmpty ? Strings.appName : null;
 
-  bool validateFields() {
-    if (_email.value != null &&
-        _email.value.isNotEmpty &&
-        _password.value != null &&
-        _password.value.isNotEmpty &&
-        _email.value.contains('@') &&
-        _password.value.length > 3) {
-      return true;
-    } else {
-      return false;
-    }
-  }
+  onEmailSaved(String value) => _email = value;
+
+  bool validateFields() => _email != null &&
+      _email.isNotEmpty &&
+      _email.contains('@');
 
   Future<UsersList> fetchUsers() {
     return _repository.getUsers();

@@ -21,65 +21,85 @@ class _SignInForm extends State<SignInWidget> {
   Widget build(BuildContext context) {
     return Container(
         padding: EdgeInsets.all(20.0),
-          child: BlocBuilder<UserEvent, int>(
+          child: BlocBuilder<UserEvent, UserState>(
               bloc: _bloc,
-              builder: (context, state) => RoutingWrapper(
-//                  route: state.route?.value,
-                  child: InfoAlert(
-                      title: Strings.email,
-                      content: Strings.email,
-                      child: Scaffold(
-                          body: LoadingWrapper(
-                            isLoading: false,
-                            child: Container(
-                                padding: EdgeInsets.all(16.0),
-                                child: Form(
-                                  key: _formKey,
-                                  child: ListView(
-                                    children: <Widget>[
-                                      ListTile(
-                                        leading: const Icon(Icons.email),
-                                        title: TextFormField (
-                                          decoration: InputDecoration(
-                                            hintText: "Email",
-                                          ),
-                                          validator: _bloc.validateEmail,
-                                        ),
-                                      ),
-                                      _getButton(),
-                                    ],
-                                  ),
-                                )),
-                          )))
+              builder: (context, state) => Container(
+                  padding: EdgeInsets.all(16.0),
+                  child: Form(
+                    key: _formKey,
+                    child: ListView(
+                      shrinkWrap: true,
+                      children: <Widget>[
+                        CustomFieldSignIn(
+                            validator: _bloc.validateEmail,
+                            onSaved: _bloc.onEmailSaved,
+                            state: state),
+//                          title: TextFormField (
+//                            maxLines: 1,
+//                            keyboardType: TextInputType.emailAddress,
+//                            autofocus: false,
+//                            decoration: InputDecoration(
+//                              hintText: "Email from PingBoard",
+//                              errorText: "Email ${state.message}",
+//                            ),
+//                            validator: _bloc.validateEmail,
+//                            onSaved: (String email) {
+//                              print('saved $email');
+//                              _bloc.onEmailSaved(email);
+//                            },
+//                          ),
 
+                        _getButton(),
+                      ],
+                    ),
+                  ))
           ),
-        ),
     );
   }
 
-  _getFormSignIn() {
-    return ListView(
-      children: <Widget>[
-        ListTile(
-          leading: const Icon(Icons.access_time),
-          title: TextField(
-            decoration: InputDecoration(
-              hintText: "Time",
-            ),
-          ),
-        ),
-        _getButton(),
-      ],
-    );
+  @override
+  void dispose() {
+    _bloc?.dispose();
+    super.dispose();
   }
-
-
 
   _getButton() {
     return FloatingActionButton(
-      child: Icon(Icons.add),
-      onPressed: () => _bloc.dispatch(UserEvent.submit),
+        child: Icon(Icons.add),
+        onPressed: () {
+          final form = _formKey.currentState;
+          if (form.validate()) {
+            form.save();
+            _bloc.dispatch(UserEvent.submit);
+          }
+        }
     );
   }
+}
 
+class CustomFieldSignIn extends StatelessWidget {
+  final Function(String) validator;
+  final Function(String) onSaved;
+  final UserState state;
+
+  const CustomFieldSignIn({Key key, @required this.validator, @required this.onSaved, @required this.state})
+      : super(key: key);
+
+  @override
+  Widget build(BuildContext context) => Padding(
+    padding: const EdgeInsets.fromLTRB(0.0, 100.0, 0.0, 0.0),
+    child: TextFormField(
+      maxLines: 1,
+      keyboardType: TextInputType.emailAddress,
+      autofocus: false,
+      decoration: InputDecoration(
+          hintText: (state.field == FormMode.email) ?  Strings.email : Strings.securityKey,
+          icon: Icon((state.field == FormMode.email) ? Icons.mail : Icons.lock, color: Colors.grey),
+          errorText: state.errorMessage
+
+      ),
+      validator: validator,
+      onSaved: onSaved,
+    ),
+  );
 }

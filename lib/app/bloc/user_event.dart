@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
 
-enum UserEvent { submit, signed }
+enum UserEvent { submit }
 
 

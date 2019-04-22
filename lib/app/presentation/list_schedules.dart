@@ -1,30 +1,19 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:join_to_eat/app/meeting/meeting_bloc.dart';
-import 'package:join_to_eat/app/meeting/meeting_event.dart';
 
 class ListSchedules extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final MeetingBloc _counterBloc = BlocProvider.of<MeetingBloc>(context);
     List<String> items = ["100","200","800","1.2"];
 
     return Scaffold(
       backgroundColor: Colors.white70,
-      body: BlocBuilder<MeetingEvent, int>(
-        bloc: _counterBloc,
-        builder: (BuildContext context, int count) {
-          items.add("$count");
-
-          return ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (BuildContext _context, int i) {
-                return _buildRow(items[i]);
-              }
-          );
-        },
-      ),
+      body: ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (BuildContext _context, int i) {
+            return _buildRow(items[i]);
+          }
+    ),
     );
   }
 

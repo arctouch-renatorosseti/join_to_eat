@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:join_to_eat/app/main_app.dart';
-import 'package:join_to_eat/app/meeting/meeting_bloc.dart';
-import 'package:join_to_eat/app/meeting/meeting_event.dart';
 import 'package:join_to_eat/app/repository/load_json.dart';
 import 'package:join_to_eat/app/bloc/user_bloc.dart';
 void main() {
