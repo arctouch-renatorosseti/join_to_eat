@@ -5,8 +5,8 @@ import 'firestore_provider.dart';
 class Repository {
   final _firestoreProvider = FirestoreProvider();
 
-  Future<UsersList> getUsers() async {
-    String jsonUsers = await _loadUsersAsset();
+  Future<UsersList> getUsers(String jsonUsers) async {
+//    String jsonUsers = await _loadUsersAsset();
     return _firestoreProvider.getJsonUsers(jsonUsers);
   }
 

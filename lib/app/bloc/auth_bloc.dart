@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 import 'package:join_to_eat/app/bloc/auth_event.dart';
 import 'package:join_to_eat/app/model/user.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
@@ -25,13 +27,21 @@ class AuthState {
 
 class AuthBloc extends Bloc<UserEvent, AuthState> {
   final _repository = Repository();
+
+  final _firestore = Firestore.instance;
+
   String _email;
   String _securityKey;
 
   UsersList _usersList;
 
   AuthBloc() {
-    fetchUsers().then((onValue) {
+//    submit();
+  }
+
+  Future init() async {
+    String jsonUsers = await _loadUsersAsset();
+    fetchUsers(jsonUsers).then((onValue) {
       _usersList = onValue;
       print("Users length: ${onValue.users.length}");
     });
@@ -64,46 +74,58 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
             } else {
               yield AuthState(currentState.field, "Invalid security key");
             }
-
             break;
           case FormMode.mainScreen:
             print("Main Screen");
             break;
         }
-//        } else {
-//          yield AuthState(currentState.field ,(currentState.field == FormMode.email) ? "Invalid email" : "Invalid security key");
-//        }
         break;
     }
   }
 
-  String validateField(String value) =>
-      value.isEmpty ? Strings.emptyFieldError : null;
+  String validateField(String value) => value.isEmpty ? Strings.emptyFieldError : null;
 
   onEmailSaved(String value) => _email = value;
 
   onSecurityKeySaved(String value) => _securityKey = value;
 
-  bool isEmailValid() =>
-      _email != null && _email.isNotEmpty && _email.contains('@');
+  bool isEmailValid() => _email != null && _email.isNotEmpty && _email.contains('@');
 
   bool _isEmailRegistered(String email) {
-    for (User user in _usersList.users) {
-      if (user.email == email) {
-        return true;
-      }
-    }
+    searchUserEmail(email).listen((onData) => {
+      print("Documents: " + onData.documents.length.toString())
+    });
+//    for (User user in _usersList.users) {
+//      if (user.email == email) {
+//        return true;
+//      }
+//    }
     return false;
   }
 
-  bool _isSecurityKeyValid() =>
-      _securityKey != null &&
-      _securityKey.isNotEmpty &&
-      _securityKey == "12345";
+  bool _isSecurityKeyValid() => _securityKey != null && _securityKey.isNotEmpty && _securityKey == "12345";
 
-  Future<UsersList> fetchUsers() {
-    return _repository.getUsers();
+  Future<UsersList> fetchUsers(String jsonUsers) {
+    return _repository.getUsers(jsonUsers);
   }
 
-  void submit() {}
+  Future<String> _loadUsersAsset() async {
+    return await rootBundle.loadString('assets/users.json');
+  }
+
+  void submit() async {
+    Firestore.instance.collection('users').snapshots().listen((onData) => {
+          fetchUsers(onData.documents.toString()).then((onValue) {
+            _usersList = onValue;
+            print("Users length: ${onValue.users.length}");
+          })
+        });
+  }
+
+  Stream<QuerySnapshot> searchUserEmail(String email) {
+    return _firestore
+        .collection("users")
+        .where('email', isEqualTo: email)
+        .snapshots();
+  }
 }
