@@ -38,6 +38,8 @@ dependencies:
   path_provider: ^0.5.0+1
   json_serializable: ^2.2.1
   kiwi: ^0.1.0
+  flutter_google_places: ^0.2.2
+  location: ^2.3.5
 
 dev_dependencies:
   flutter_test:

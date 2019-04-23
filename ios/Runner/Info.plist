@@ -43,5 +43,9 @@
 	<false/>
 	<key>io.flutter.embedded_views_preview</key>
     <string>YES</string>
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Join to Eat wants your location to serve you better</string>
+    <key>NSLocationAlwaysUsageDescription</key>
+    <string>Join to Eat wants your location to serve you better</string>
 </dict>
 </plist>

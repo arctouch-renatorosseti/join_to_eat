@@ -8,4 +8,7 @@ class Strings {
   static const String emptyFieldError = 'Field can`t be empty.';
   static const String errorUserNotFound = 'Email não encontrado.';
   static const String ok = 'ok';
+
+  static const String ratingAbsent = 'No rating available';
+  static const String rating = 'Rating: {0}';
 }
