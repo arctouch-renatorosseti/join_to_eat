@@ -7,4 +7,7 @@ class Strings {
   static const String unknownError = 'Erro inesperado, tente novamente mais tarde.';
   static const String errorUserNotFound = 'Email não encontrado.';
   static const String ok = 'ok';
+
+  static const String ratingAbsent = 'No rating available';
+  static const String rating = 'Rating: {0}';
 }
