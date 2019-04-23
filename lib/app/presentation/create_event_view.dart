@@ -1,18 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
-class FormProfile extends StatefulWidget {
+class CreateEventView extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _DetailsProfile();
+  State<StatefulWidget> createState() => _CreateEventViewState();
 }
 
-class _DetailsProfile extends State<FormProfile> {
+class _CreateEventViewState extends State<CreateEventView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body:  Container(
+      appBar: AppBar(),
+      body: Container(
         padding: EdgeInsets.all(20.0),
         child: Form(
           key: this._formKey,
@@ -34,12 +35,10 @@ class _DetailsProfile extends State<FormProfile> {
                   ),
                 ),
               ),
-
             ],
           ),
         ),
       ),
     );
   }
-
 }

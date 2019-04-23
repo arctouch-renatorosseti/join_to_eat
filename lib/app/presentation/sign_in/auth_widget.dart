@@ -3,9 +3,9 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:join_to_eat/app/bloc/auth_bloc.dart';
 import 'package:join_to_eat/app/bloc/auth_event.dart';
-import 'package:join_to_eat/app/presentation/main_view.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
-import 'package:join_to_eat/app/utils/widgets/routing_wrapper.dart';
+
+import '../map_view.dart';
 
 class SignInWidget extends StatefulWidget {
   @override
@@ -27,12 +27,21 @@ class _SignInForm extends State<SignInWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Join To Eat.')),
-      body: BlocBuilder<UserEvent, AuthState>(
-        bloc: _bloc,
-        builder: (context, state) => Container(
-            child: (state.field != FormMode.mainScreen)
-                ? Form(
+        appBar: AppBar(title: Text('Join To Eat.')),
+        body: BlocListener(
+            bloc: _bloc,
+            listener: (context, state) {
+              if (state.field == FormMode.mainScreen) {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => MapView()),
+                );
+              }
+            },
+            child: BlocBuilder<UserEvent, AuthState>(
+              bloc: _bloc,
+              builder: (context, state) => Container(
+                      child: Form(
                     key: _formKey,
                     child: ListView(
                       padding: EdgeInsets.all(16.0),
@@ -40,26 +49,14 @@ class _SignInForm extends State<SignInWidget> {
                       children: <Widget>[
                         CustomFieldSignIn(
                             validator: _bloc.validateField,
-                            onSaved: (state.field == FormMode.email)
-                                ? _bloc.onEmailSaved
-                                : _bloc.onSecurityKeySaved,
+                            onSaved: (state.field == FormMode.email) ? _bloc.onEmailSaved : _bloc.onSecurityKeySaved,
                             state: state,
                             textFieldController: _textFieldController),
                         _getButton(state),
                       ],
                     ),
-                  )
-                : MainView()),
-      ),
-    );
-  }
-
-  Widget _navigateToMainScreen() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => MainView()),
-    );
-    return Text("MainView");
+                  )),
+            )));
   }
 
   @override
@@ -92,11 +89,7 @@ class CustomFieldSignIn extends StatelessWidget {
   final TextEditingController textFieldController;
 
   const CustomFieldSignIn(
-      {Key key,
-      @required this.validator,
-      @required this.onSaved,
-      @required this.state,
-      this.textFieldController})
+      {Key key, @required this.validator, @required this.onSaved, @required this.state, this.textFieldController})
       : super(key: key);
 
   @override
@@ -107,12 +100,8 @@ class CustomFieldSignIn extends StatelessWidget {
           keyboardType: TextInputType.emailAddress,
           controller: textFieldController,
           decoration: InputDecoration(
-              hintText: (state.field == FormMode.email)
-                  ? Strings.email
-                  : Strings.securityKey,
-              icon: Icon(
-                  (state.field == FormMode.email) ? Icons.mail : Icons.lock,
-                  color: Colors.grey),
+              hintText: (state.field == FormMode.email) ? Strings.email : Strings.securityKey,
+              icon: Icon((state.field == FormMode.email) ? Icons.mail : Icons.lock, color: Colors.grey),
               errorText: state.errorMessage),
           validator: validator,
           onSaved: onSaved,

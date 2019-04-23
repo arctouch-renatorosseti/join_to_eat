@@ -7,7 +7,6 @@ import 'package:join_to_eat/app/model/users_list.dart';
 import 'package:join_to_eat/app/repository/repository.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/routes.dart';
-import 'package:rxdart/rxdart.dart';
 
 enum FormMode { email, securityKey, mainScreen }
 
@@ -77,15 +76,13 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
     }
   }
 
-  String validateField(String value) =>
-      value.isEmpty ? Strings.emptyFieldError : null;
+  String validateField(String value) => value.isEmpty ? Strings.emptyFieldError : null;
 
   onEmailSaved(String value) => _email = value;
 
   onSecurityKeySaved(String value) => _securityKey = value;
 
-  bool isEmailValid() =>
-      _email != null && _email.isNotEmpty && _email.contains('@');
+  bool isEmailValid() => _email != null && _email.isNotEmpty && _email.contains('@');
 
   bool _isEmailRegistered(String email) {
     for (User user in _usersList.users) {
@@ -96,10 +93,7 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
     return false;
   }
 
-  bool _isSecurityKeyValid() =>
-      _securityKey != null &&
-      _securityKey.isNotEmpty &&
-      _securityKey == "12345";
+  bool _isSecurityKeyValid() => _securityKey != null && _securityKey.isNotEmpty && _securityKey == "12345";
 
   Future<UsersList> fetchUsers() {
     return _repository.getUsers();

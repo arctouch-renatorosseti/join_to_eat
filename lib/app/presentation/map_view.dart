@@ -2,9 +2,10 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:google_maps_webservice/places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_webservice/places.dart';
 import 'package:join_to_eat/app/resources/constants.dart';
+import 'package:join_to_eat/app/utils/routes.dart';
 import 'package:location/location.dart' as LocationManager;
 
 class MapView extends StatefulWidget {
@@ -20,6 +21,8 @@ class _MapViewState extends State<MapView> {
   static const LatLng _center = const LatLng(-27.544805723209087, -48.5015320032835); // ArcTouch Floripa
   static const double _initialZoom = 16.5;
   static const String _typeFilter = "restaurant";
+
+  static const Color _buttonBackgroundColor = Colors.lightGreen;
 
   static const num _searchRadius = 500;
 
@@ -42,19 +45,12 @@ class _MapViewState extends State<MapView> {
     });
   }
 
-  void _onAddMarkerButtonPressed() {
-    setState(() {
-      _markers.add(Marker(
-        // This marker id can be anything that uniquely identifies each marker.
-        markerId: MarkerId(_lastMapPosition.toString()),
-        position: _lastMapPosition,
-        infoWindow: InfoWindow(
-          title: 'Really cool place',
-          snippet: '5 Star Rating',
-        ),
-        icon: BitmapDescriptor.defaultMarker,
-      ));
-    });
+  void _onEventListButtonPressed() {
+    Navigator.pushNamed(context, Routes.listEvents);
+  }
+
+  void _onAddEventButtonPressed() {
+    Navigator.pushNamed(context, Routes.createEvent);
   }
 
   void _onCameraMove(CameraPosition position) {
@@ -118,21 +114,30 @@ class _MapViewState extends State<MapView> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Align(
-            alignment: Alignment.topRight,
-            child: Column(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 FloatingActionButton(
+                  heroTag: "eventListFloating",
+                  onPressed: _onEventListButtonPressed,
+                  materialTapTargetSize: MaterialTapTargetSize.padded,
+                  backgroundColor: _buttonBackgroundColor,
+                  child: const Icon(Icons.format_list_bulleted, size: 32.0),
+                ),
+                FloatingActionButton(
+                  heroTag: "addEventFloating",
+                  onPressed: _onAddEventButtonPressed,
+                  materialTapTargetSize: MaterialTapTargetSize.padded,
+                  backgroundColor: _buttonBackgroundColor,
+                  child: const Icon(Icons.call, size: 32.0),
+                ),
+                FloatingActionButton(
+                  heroTag: "mapTypeFloating",
                   onPressed: _onMapTypeButtonPressed,
                   materialTapTargetSize: MaterialTapTargetSize.padded,
-                  backgroundColor: Colors.green,
-                  child: const Icon(Icons.map, size: 36.0),
-                ),
-                SizedBox(height: 16.0),
-                FloatingActionButton(
-                  onPressed: _onAddMarkerButtonPressed,
-                  materialTapTargetSize: MaterialTapTargetSize.padded,
-                  backgroundColor: Colors.green,
-                  child: const Icon(Icons.add_location, size: 36.0),
+                  backgroundColor: _buttonBackgroundColor,
+                  child: const Icon(Icons.map, size: 32.0),
                 ),
               ],
             ),
