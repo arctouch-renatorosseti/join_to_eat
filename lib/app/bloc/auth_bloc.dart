@@ -28,8 +28,6 @@ class AuthState {
 class AuthBloc extends Bloc<UserEvent, AuthState> {
   final _repository = Repository();
 
-  final _firestore = Firestore.instance;
-
   String _email;
   String _securityKey;
 
@@ -37,6 +35,7 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
 
   AuthBloc() {
 //    submit();
+    init();
   }
 
   Future init() async {
@@ -44,6 +43,9 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
     fetchUsers(jsonUsers).then((onValue) {
       _usersList = onValue;
       print("Users length: ${onValue.users.length}");
+      for (var user in _usersList.users) {
+        _repository.saveUserCollection(user.toJson(), user.id);
+      }
     });
   }
 
@@ -92,14 +94,11 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
   bool isEmailValid() => _email != null && _email.isNotEmpty && _email.contains('@');
 
   bool _isEmailRegistered(String email) {
-    searchUserEmail(email).listen((onData) => {
-      print("Documents: " + onData.documents.length.toString())
-    });
-//    for (User user in _usersList.users) {
-//      if (user.email == email) {
-//        return true;
-//      }
-//    }
+    for (User user in _usersList.users) {
+      if (user.email == email) {
+        return true;
+      }
+    }
     return false;
   }
 
@@ -120,12 +119,5 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
             print("Users length: ${onValue.users.length}");
           })
         });
-  }
-
-  Stream<QuerySnapshot> searchUserEmail(String email) {
-    return _firestore
-        .collection("users")
-        .where('email', isEqualTo: email)
-        .snapshots();
   }
 }

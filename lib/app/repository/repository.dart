@@ -1,3 +1,6 @@
+import 'dart:convert';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
 import 'firestore_provider.dart';
@@ -5,13 +8,13 @@ import 'firestore_provider.dart';
 class Repository {
   final _firestoreProvider = FirestoreProvider();
 
-  Future<UsersList> getUsers(String jsonUsers) async {
-//    String jsonUsers = await _loadUsersAsset();
-    return _firestoreProvider.getJsonUsers(jsonUsers);
+  void saveUserCollection(Map<String, dynamic> json, String id) {
+    _firestoreProvider.saveUserCollection(json, id);
   }
 
-  Future<String> _loadUsersAsset() async {
-    return await rootBundle.loadString('assets/users.json');
+  Future<UsersList> getUsers(String jsonString) async {
+    Map decoded = jsonDecode(jsonString);
+    UsersList usersList = UsersList.fromJson(decoded['users']);
+    return usersList;
   }
-
 }
