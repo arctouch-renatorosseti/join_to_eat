@@ -5,6 +5,7 @@ import 'package:join_to_eat/app/bloc/auth_bloc.dart';
 import 'package:join_to_eat/app/bloc/auth_event.dart';
 import 'package:join_to_eat/app/presentation/main_view.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
+import 'package:join_to_eat/app/utils/widgets/loading_wrapper.dart';
 import 'package:join_to_eat/app/utils/widgets/routing_wrapper.dart';
 
 class SignInWidget extends StatefulWidget {
@@ -30,7 +31,8 @@ class _SignInForm extends State<SignInWidget> {
       appBar: AppBar(title: Text('Join To Eat.')),
       body: BlocBuilder<UserEvent, AuthState>(
         bloc: _bloc,
-        builder: (context, state) => Container(
+        builder: (context, state) => LoadingWrapper(
+            isLoading: state.isLoading,
             child: (state.field != FormMode.mainScreen)
                 ? Form(
                     key: _formKey,

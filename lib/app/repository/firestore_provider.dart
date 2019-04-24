@@ -4,6 +4,10 @@ class FirestoreProvider {
   Firestore _firestore = Firestore.instance;
 
   void saveUserCollection(Map<String, dynamic> data, String id) {
-    _firestore.collection("users").document(id).setData({'users': data, 'merge': true});
+    _firestore.collection("users").document(id).setData({'user': data, 'merge': true});
+  }
+
+  Future<QuerySnapshot> isEmailRegistered(String email) {
+    return _firestore.collection("users").where('user.email', isEqualTo: email).getDocuments();
   }
 }

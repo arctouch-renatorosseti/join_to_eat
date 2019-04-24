@@ -1,7 +1,6 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:join_to_eat/app/bloc/auth_event.dart';
 import 'package:join_to_eat/app/model/user.dart';
@@ -9,7 +8,6 @@ import 'package:join_to_eat/app/model/users_list.dart';
 import 'package:join_to_eat/app/repository/repository.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/routes.dart';
-import 'package:rxdart/rxdart.dart';
 
 enum FormMode { email, securityKey, mainScreen }
 
@@ -17,24 +15,22 @@ class AuthState {
   FormMode field;
   String errorMessage;
   String route;
+  bool isLoading;
 
-  AuthState(FormMode field, String errorMessage) {
+  AuthState(FormMode field, String errorMessage, bool isLoading) {
     this.field = field;
     this.errorMessage = errorMessage;
-//    this.route = route;
+    this.isLoading = isLoading;
   }
 }
 
 class AuthBloc extends Bloc<UserEvent, AuthState> {
   final _repository = Repository();
-
   String _email;
   String _securityKey;
-
   UsersList _usersList;
 
   AuthBloc() {
-//    submit();
     init();
   }
 
@@ -50,7 +46,7 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
   }
 
   @override
-  AuthState get initialState => AuthState(FormMode.email, "");
+  AuthState get initialState => AuthState(FormMode.email, "", false);
 
   @override
   Stream<AuthState> mapEventToState(UserEvent event) async* {
@@ -59,22 +55,21 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
         switch (currentState.field) {
           case FormMode.email:
             if (isEmailValid()) {
-              if (_isEmailRegistered(_email)) {
-                yield AuthState(FormMode.securityKey, "");
-              } else {
-                yield AuthState(currentState.field, "Email is not registered");
-              }
+              yield AuthState(currentState.field, "", true);
+              yield* await _repository
+                  .isEmailRegistered(_email)
+                  .then((onValue) => handleEmailState(onValue));
             } else {
-              yield AuthState(currentState.field, "Invalid email");
+              yield AuthState(currentState.field, "Invalid email", false);
             }
             break;
           case FormMode.securityKey:
             if (_isSecurityKeyValid()) {
-              AuthState userState = AuthState(FormMode.mainScreen, "");
+              AuthState userState = AuthState(FormMode.mainScreen, "", false);
               userState.route = Routes.main;
               yield userState;
             } else {
-              yield AuthState(currentState.field, "Invalid security key");
+              yield AuthState(currentState.field, "Invalid security key", false);
             }
             break;
           case FormMode.mainScreen:
@@ -82,6 +77,15 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
             break;
         }
         break;
+    }
+  }
+
+  Stream<AuthState> handleEmailState(bool isEmailRegistered) async* {
+    print("State: $isEmailRegistered");
+    if (isEmailRegistered) {
+      yield AuthState(FormMode.securityKey, "", false);
+    } else {
+      yield AuthState(currentState.field, "Email is not registered", false);
     }
   }
 
@@ -110,14 +114,5 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
 
   Future<String> _loadUsersAsset() async {
     return await rootBundle.loadString('assets/users.json');
-  }
-
-  void submit() async {
-    Firestore.instance.collection('users').snapshots().listen((onData) => {
-          fetchUsers(onData.documents.toString()).then((onValue) {
-            _usersList = onValue;
-            print("Users length: ${onValue.users.length}");
-          })
-        });
   }
 }
