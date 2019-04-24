@@ -2,17 +2,16 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PreferencesProvider {
 
-  final String _userSigned = "allowNotifications";
+  static const String USER_SIGNED = "USER_SIGNED";
 
   Future<bool> getUserSigned() async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    return prefs.getBool(_userSigned) ?? '';
+    return prefs.getBool(USER_SIGNED) ?? false;
   }
 
   Future<bool> setUserSigned(bool value) async {
     final SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.setBool(_userSigned, value);
+    return prefs.setBool(USER_SIGNED, value);
   }
 
 }
