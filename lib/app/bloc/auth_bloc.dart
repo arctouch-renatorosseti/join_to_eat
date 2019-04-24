@@ -18,7 +18,6 @@ class AuthState {
   AuthState(FormMode field, String errorMessage) {
     this.field = field;
     this.errorMessage = errorMessage;
-//    this.route = route;
   }
 }
 
@@ -49,10 +48,10 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
               if (_isEmailRegistered(_email)) {
                 yield AuthState(FormMode.securityKey, "");
               } else {
-                yield AuthState(currentState.field, "Email is not registered");
+                yield AuthState(currentState.field, Strings.emailNotRegistered);
               }
             } else {
-              yield AuthState(currentState.field, "Invalid email");
+              yield AuthState(currentState.field, Strings.emailInvalid);
             }
             break;
           case FormMode.securityKey:
@@ -61,17 +60,13 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
               userState.route = Routes.main;
               yield userState;
             } else {
-              yield AuthState(currentState.field, "Invalid security key");
+              yield AuthState(currentState.field, Strings.securityKeyInvalid);
             }
 
             break;
           case FormMode.mainScreen:
-            print("Main Screen");
             break;
         }
-//        } else {
-//          yield AuthState(currentState.field ,(currentState.field == FormMode.email) ? "Invalid email" : "Invalid security key");
-//        }
         break;
     }
   }

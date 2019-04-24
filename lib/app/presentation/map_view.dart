@@ -5,8 +5,10 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:join_to_eat/app/resources/constants.dart';
+import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/routes.dart';
 import 'package:location/location.dart' as LocationManager;
+import 'package:sprintf/sprintf.dart';
 
 class MapView extends StatefulWidget {
   @override
@@ -78,13 +80,14 @@ class _MapViewState extends State<MapView> {
             markerId: MarkerId(item.id),
             position: LatLng(item.geometry.location.lat, item.geometry.location.lng),
             infoWindow: InfoWindow(
-                title: item.name, snippet: item.rating == null ? "No rating available" : 'Rating: ${item.rating}'),
+                title: item.name,
+                snippet: item.rating == null ? Strings.ratingAbsent : sprintf(Strings.rating, [item.rating.toInt()])),
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
           ));
         });
       });
     } else {
-      Scaffold.of(context).showSnackBar(new SnackBar(content: new Text("Could not load nearby places.")));
+      Scaffold.of(context).showSnackBar(new SnackBar(content: new Text(Strings.nearbyPlaceError)));
       print("Error searching nearby places: ${result.errorMessage}");
     }
   }

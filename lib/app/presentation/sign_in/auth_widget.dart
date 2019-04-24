@@ -27,7 +27,7 @@ class _SignInForm extends State<SignInWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text('Join To Eat.')),
+        appBar: AppBar(title: Text(Strings.appName)),
         body: BlocListener(
             bloc: _bloc,
             listener: (context, state) {
@@ -71,7 +71,7 @@ class _SignInForm extends State<SignInWidget> {
     }
     return RaisedButton(
         color: Colors.orange,
-        child: Text("Submit"),
+        child: Text(Strings.submit),
         onPressed: () {
           final form = _formKey.currentState;
           if (form.validate()) {
