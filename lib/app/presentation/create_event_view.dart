@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:join_to_eat/app/resources/strings.dart';
 
 class CreateEventView extends StatefulWidget {
   @override
@@ -23,7 +24,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                 leading: const Icon(Icons.access_time),
                 title: new TextField(
                   decoration: InputDecoration(
-                    hintText: "Time",
+                    hintText: Strings.hintTime,
                   ),
                 ),
               ),
@@ -31,7 +32,7 @@ class _CreateEventViewState extends State<CreateEventView> {
                 leading: const Icon(Icons.location_on),
                 title: TextField(
                   decoration: InputDecoration(
-                    hintText: "Restaurant name",
+                    hintText: Strings.hintRestaurant,
                   ),
                 ),
               ),

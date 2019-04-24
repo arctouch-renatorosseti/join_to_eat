@@ -40,6 +40,7 @@ dependencies:
   kiwi: ^0.1.0
   flutter_google_places: ^0.2.2
   location: ^2.3.5
+  sprintf: ^4.0.2
 
 dev_dependencies:
   flutter_test:
