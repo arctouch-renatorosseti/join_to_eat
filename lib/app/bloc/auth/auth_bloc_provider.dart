@@ -1,5 +1,5 @@
 import 'package:flutter/cupertino.dart';
-import 'package:join_to_eat/app/bloc/auth_bloc.dart';
+import 'package:join_to_eat/app/bloc/auth/auth_bloc.dart';
 
 class AuthBlocProvider extends InheritedWidget {
   final bloc = AuthBloc();

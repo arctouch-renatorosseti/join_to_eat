@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:join_to_eat/app/bloc/auth_bloc.dart';
-import 'package:join_to_eat/app/bloc/auth_event.dart';
+import 'package:join_to_eat/app/bloc/auth/auth_bloc.dart';
+import 'package:join_to_eat/app/bloc/auth/auth_event.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
-
+import 'package:join_to_eat/app/utils/widgets/loading_wrapper.dart';
 import '../map_view.dart';
 
-class SignInWidget extends StatefulWidget {
+class AuthView extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => _SignInForm();
+  State<StatefulWidget> createState() => _AuthForm();
 }
 
-class _SignInForm extends State<SignInWidget> {
+class _AuthForm extends State<AuthView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _bloc = AuthBloc();
 
@@ -27,36 +27,40 @@ class _SignInForm extends State<SignInWidget> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text(Strings.appName)),
-        body: BlocListener(
-            bloc: _bloc,
-            listener: (context, state) {
-              if (state.field == FormMode.mainScreen) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => MapView()),
-                );
-              }
-            },
-            child: BlocBuilder<UserEvent, AuthState>(
-              bloc: _bloc,
-              builder: (context, state) => Container(
-                      child: Form(
-                    key: _formKey,
-                    child: ListView(
-                      padding: EdgeInsets.all(16.0),
-                      shrinkWrap: true,
-                      children: <Widget>[
-                        CustomFieldSignIn(
-                            validator: _bloc.validateField,
-                            onSaved: (state.field == FormMode.email) ? _bloc.onEmailSaved : _bloc.onSecurityKeySaved,
-                            state: state,
-                            textFieldController: _textFieldController),
-                        _getButton(state),
-                      ],
-                    ),
-                  )),
-            )));
+      appBar: AppBar(title: Text(Strings.appName)),
+      body: BlocListener(
+        bloc: _bloc,
+        listener: (context, state) {
+          if (state.field == FormMode.mainScreen) {
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(builder: (context) => MapView()),
+            );
+          }
+        },
+        child: BlocBuilder<UserEvent, AuthState>(
+          bloc: _bloc,
+          builder: (context, state) => LoadingWrapper(
+                isLoading: state.isLoading,
+                child: Form(
+                  key: _formKey,
+                  child: ListView(
+                    padding: EdgeInsets.all(16.0),
+                    shrinkWrap: true,
+                    children: <Widget>[
+                      CustomFieldSignIn(
+                          validator: _bloc.validateField,
+                          onSaved: (state.field == FormMode.email) ? _bloc.onEmailSaved : _bloc.onSecurityKeySaved,
+                          state: state,
+                          textFieldController: _textFieldController),
+                      _getButton(state),
+                    ],
+                  ),
+                ),
+              ),
+        ),
+      ),
+    );
   }
 
   @override

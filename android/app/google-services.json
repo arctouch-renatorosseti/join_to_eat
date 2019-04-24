@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "690158840958",
+    "firebase_url": "https://jointoeat.firebaseio.com",
+    "project_id": "jointoeat",
+    "storage_bucket": "jointoeat.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:690158840958:android:13ff1751154c0451",
+        "android_client_info": {
+          "package_name": "arctouch.join_to_eat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "690158840958-8fp9jd97jbif4u7ka3rm0127vp5mrqs8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB5VD3sUVtIoAAF1BhaxxKmRcNckw9FwkE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "690158840958-8fp9jd97jbif4u7ka3rm0127vp5mrqs8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
