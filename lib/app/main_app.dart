@@ -7,13 +7,14 @@ import 'package:join_to_eat/app/utils/routes.dart';
 
 import 'presentation/create_event_view.dart';
 import 'presentation/list_events_view.dart';
+import 'resources/strings.dart';
 
 class MainApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Join To Eat',
+      title: Strings.appName,
       theme: ThemeData(
         primarySwatch: Colors.orange,
       ),

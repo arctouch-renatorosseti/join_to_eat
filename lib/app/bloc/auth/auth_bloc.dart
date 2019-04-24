@@ -44,7 +44,7 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
           case FormMode.email:
             if (isEmailValid()) {
               yield AuthState(currentState.field, "", true);
-              yield* await _repository.isEmailRegistered(_email).then((onValue) => handleEmailState(onValue));
+              yield* await _repository.isEmailRegistered(_email).then((onValue) => _handleEmailState(onValue));
             } else {
               yield AuthState(currentState.field, "Invalid email", false);
             }
@@ -55,7 +55,7 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
               userState.route = Routes.main;
               yield userState;
             } else {
-              yield AuthState(currentState.field, "Invalid security key", false);
+              yield AuthState(currentState.field, Strings.securityKeyInvalid,false);
             }
             break;
           case FormMode.mainScreen:
@@ -65,12 +65,12 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
     }
   }
 
-  Stream<AuthState> handleEmailState(bool isEmailRegistered) async* {
+  Stream<AuthState> _handleEmailState(bool isEmailRegistered) async* {
     print("State: $isEmailRegistered");
     if (isEmailRegistered) {
       yield AuthState(FormMode.securityKey, "", false);
     } else {
-      yield AuthState(currentState.field, "Email is not registered", false);
+      yield AuthState(currentState.field, Strings.emailNotRegistered, false);
     }
   }
 

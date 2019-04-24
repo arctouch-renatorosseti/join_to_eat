@@ -41,6 +41,7 @@ dependencies:
   shared_preferences: 0.5.2
   flutter_google_places: ^0.2.2
   location: ^2.3.5
+  sprintf: ^4.0.2
 
 dev_dependencies:
   build_runner: ^1.0.0

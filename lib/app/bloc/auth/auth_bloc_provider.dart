@@ -9,8 +9,6 @@ class AuthBlocProvider extends InheritedWidget {
   bool updateShouldNotify(_) => true;
 
   static AuthBloc of(BuildContext context) {
-    return (context.inheritFromWidgetOfExactType(AuthBlocProvider)
-            as AuthBlocProvider)
-        .bloc;
+    return (context.inheritFromWidgetOfExactType(AuthBlocProvider) as AuthBlocProvider).bloc;
   }
 }
