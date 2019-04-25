@@ -1,24 +1,15 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
-
 part 'user.g.dart';
 
 @JsonSerializable()
 class User extends Equatable {
-  final String id;
-
-  final String firstName;
-  final String lastName;
-  final String freeTimeText;
-  final List<String> interests;
-
-//  final String nickname;
-  final String email;
-
-//  final String phone;
-//  final String jobTitle;
-//  final String skills;
-  String generatedKey;
+  String id;
+  String email;
+  String firstName;
+  String lastName;
+  String freeTimeText;
+  List<String> interests;
 
   User({this.id, this.firstName, this.lastName, this.email, this.freeTimeText, this.interests})
       : super([id, firstName, lastName, email, freeTimeText]);

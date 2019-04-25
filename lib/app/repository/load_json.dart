@@ -14,6 +14,6 @@ import 'package:join_to_eat/app/model/users_list.dart';
 
   void _parseJsonForUsers(String jsonString) {
     Map decoded = jsonDecode(jsonString);
-    UsersList usersList = UsersList.fromJson(decoded['users']);
+    UsersList usersList = UsersList.fromJsonFile(decoded['users']);
     print("Lenght of users: ${usersList.users.length}");
   }

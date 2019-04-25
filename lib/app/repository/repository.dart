@@ -1,7 +1,7 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+import 'package:join_to_eat/app/model/meeting.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
 import 'package:join_to_eat/app/repository/preferences_provider.dart';
 import 'firestore_provider.dart';
@@ -9,37 +9,46 @@ import 'firestore_provider.dart';
 class Repository {
   final _firestoreProvider = FirestoreProvider();
   final _preferencesProvider = PreferencesProvider();
+}
 
-  void saveUserCollection(Map<String, dynamic> json, String id) {
-    _firestoreProvider.saveUserCollection(json, id);
-  }
-
+class UserRepository extends Repository {
   Future<UsersList> getUsers(String jsonString) async {
     Map decoded = jsonDecode(jsonString);
-    UsersList usersList = UsersList.fromJson(decoded['users']);
+    UsersList usersList = UsersList.fromJsonFile(decoded['users']);
     return usersList;
   }
 
   Future<bool> isEmailRegistered(String email) async {
-    return await _firestoreProvider.isEmailRegistered(email).then((onValue) => _setStateSignIn(onValue.documents.length > 0));
+    final userDocument = await _firestoreProvider.isEmailRegistered(email);
+    bool status = userDocument != null;
+    if(status) _setUserSigned(userDocument.documentID);
+    return status;
   }
 
-  Future<bool> _setStateSignIn(bool state) async {
-    _preferencesProvider.setUserSigned(state);
-    return state;
+  Future<void> _setUserSigned(String userId) async {
+      await _preferencesProvider.setUserSigned(userId);
   }
 
-  Future<bool> getUserSignedState() async {
-    return _preferencesProvider.getUserSigned();
+  Future<bool> setUserSigned(String userId) async {
+    return _preferencesProvider.setUserSigned(userId);
+  }
+
+  void setUserStatusSigned(bool status) async {
+    await _preferencesProvider.setUserSignedStatus(status);
+  }
+
+  Future<bool> isUserSigned() async {
+    bool isUserSaved = false;
+    await _preferencesProvider.getUserSigned().then((onValue) => isUserSaved = onValue.toString().isNotEmpty);
+    return await _preferencesProvider.getUserSignedStatus() && isUserSaved;
   }
 
   void loadDataFromPingBoard() async {
     String jsonUsers = await _loadUsersAsset();
     getUsers(jsonUsers).then((onValue) {
       UsersList _usersList = onValue;
-      print("Users: ${_usersList.toString()}");
       for (var user in _usersList.users) {
-        saveUserCollection(user.toJson(), user.id);
+        _saveUserCollection(user.toJson(), user.id);
       }
     });
   }
@@ -48,4 +57,19 @@ class Repository {
     return await rootBundle.loadString('assets/users.json');
   }
 
+  void _saveUserCollection(Map<String, dynamic> json, String id) {
+    _firestoreProvider.saveUserCollection(json, id);
+  }
+}
+
+class MeetingRepository extends Repository {
+  void saveMeetingCollection(Meeting meeting) {
+    _firestoreProvider.saveMeetingCollection(meeting.toJson());
+  }
+
+  void updateMeetingCollection(Meeting meeting) {
+    _firestoreProvider.updateMeetingCollection(meeting.toJson(), meeting.id);
+  }
+
+  Future<List<Meeting>> fetchMeetings() {}
 }

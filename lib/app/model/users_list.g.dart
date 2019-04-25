@@ -10,7 +10,7 @@ UsersList _$UsersListFromJson(Map<String, dynamic> json) {
   return UsersList(
       users: (json['users'] as List)
           ?.map((e) =>
-              e == null ? null : User.fromJsonFile(e as Map<String, dynamic>))
+              e == null ? null : User.fromJson(e as Map<String, dynamic>))
           ?.toList());
 }
 

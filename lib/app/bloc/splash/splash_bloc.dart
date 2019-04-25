@@ -19,7 +19,7 @@ class SplashState extends Equatable {
 enum _SplashEvent { checkAuthentication }
 
 class SplashBloc extends Bloc<_SplashEvent, SplashState> {
-  final Repository _repository = Repository();
+  final UserRepository _repository = UserRepository();
 
   SplashBloc() {
     _repository.loadDataFromPingBoard();
@@ -32,7 +32,7 @@ class SplashBloc extends Bloc<_SplashEvent, SplashState> {
   Stream<SplashState> mapEventToState(_SplashEvent event) async* {
     switch (event) {
       case _SplashEvent.checkAuthentication:
-        yield* await _repository.getUserSignedState().then((value) => navigateToView(value));
+        yield* await _repository.isUserSigned().then((value) => navigateToView(value));
         break;
     }
   }

@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:join_to_eat/app/presentation/map_view.dart';
-import 'package:join_to_eat/app/presentation/sign_in/auth_view.dart';
+import 'package:join_to_eat/app/presentation/auth/auth_view.dart';
 import 'package:join_to_eat/app/presentation/splash/splash_view.dart';
 import 'package:join_to_eat/app/utils/routes.dart';
 

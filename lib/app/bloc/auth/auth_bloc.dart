@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:join_to_eat/app/bloc/auth/auth_event.dart';
-import 'package:join_to_eat/app/model/users_list.dart';
 import 'package:join_to_eat/app/repository/repository.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/routes.dart';
@@ -27,7 +26,7 @@ class AuthState {
 }
 
 class AuthBloc extends Bloc<UserEvent, AuthState> {
-  final _repository = Repository();
+  final _repository = UserRepository();
   String _email;
   String _securityKey;
 
@@ -51,10 +50,12 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
             break;
           case FormMode.securityKey:
             if (_isSecurityKeyValid()) {
+              _repository.setUserStatusSigned(true);
               AuthState userState = AuthState(FormMode.mainScreen, "", false);
               userState.route = Routes.main;
               yield userState;
             } else {
+              _repository.setUserStatusSigned(false);
               yield AuthState(currentState.field, Strings.securityKeyInvalid,false);
             }
             break;
@@ -66,7 +67,6 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
   }
 
   Stream<AuthState> _handleEmailState(bool isEmailRegistered) async* {
-    print("State: $isEmailRegistered");
     if (isEmailRegistered) {
       yield AuthState(FormMode.securityKey, "", false);
     } else {
@@ -83,8 +83,4 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
   bool isEmailValid() => _email != null && _email.isNotEmpty && _email.contains('@');
 
   bool _isSecurityKeyValid() => _securityKey != null && _securityKey.isNotEmpty && _securityKey == "12345";
-
-  Future<UsersList> fetchUsers(String jsonUsers) {
-    return _repository.getUsers(jsonUsers);
-  }
 }
