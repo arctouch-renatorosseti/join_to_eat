@@ -12,9 +12,14 @@ class Strings {
   static const String ok = 'ok';
   static const String submit = 'Submit';
 
-  static const String hintTime = "Time";
-  static const String hintRestaurant = "Restaurant name";
+  //CREATE MEETING
+  static const String buttonCreateMeeting = "Create";
+  static const String hintMeetingDescription = "Description (Optional)";
+  static const String hintMeetingDuration = "Duration in hours (Default: 1h)";
+  static const String meetingDurationEmpty = "Please enter a duration";
+  static const String meetingDurationInvalid = "Please enter a valid duration between 1 and 24 hours";
 
+  // MAP
   static const String ratingAbsent = 'No rating available';
   static const String rating = 'Rating: %d';
 
@@ -23,4 +28,10 @@ class Strings {
   static const String emptyFieldError = 'Field can\'t be empty.';
 
   static const String securityKeyInvalid = "Invalid security key";
+
+  // CREATE QUIZ
+  static const String createQuizTitle = "Create New Quiz";
+  static const String questionTitle = "Question";
+  static const String optionsTitle = "Option %d";
+  static const String optionEmptyError = "Please enter an option.";
 }
