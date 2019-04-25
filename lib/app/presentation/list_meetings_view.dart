@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-class ListEventsView extends StatelessWidget {
+class ListMeetingsView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<String> items = ["100", "200", "800", "1.2"];

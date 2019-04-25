@@ -16,11 +16,9 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
-  Completer<GoogleMapController> _controller = Completer();
-
   GoogleMapsPlaces _googleMapsPlaces = GoogleMapsPlaces(apiKey: Constants.GOOGLE_MAPS_API_KEY);
+  GoogleMapController _controller;
 
-  static const LatLng _center = const LatLng(-27.544805723209087, -48.5015320032835); // ArcTouch Floripa
   static const double _initialZoom = 16.5;
   static const String _typeFilter = "restaurant";
 
@@ -30,15 +28,16 @@ class _MapViewState extends State<MapView> {
 
   final Set<Marker> _markers = {};
 
-  LatLng _lastMapPosition = _center;
-  Future<LatLng> _initialLocation;
+  LatLng _center = const LatLng(-27.544805723209087, -48.5015320032835); // ArcTouch Floripa
+  LatLng _lastMapPosition;
 
   MapType _currentMapType = MapType.normal;
 
   @override
   void initState() {
     super.initState();
-    _initialLocation = _getInitialLocation();
+    _lastMapPosition = _center;
+    _setCurrentLocation();
   }
 
   void _onMapTypeButtonPressed() {
@@ -47,12 +46,16 @@ class _MapViewState extends State<MapView> {
     });
   }
 
-  void _onEventListButtonPressed() {
-    Navigator.pushNamed(context, Routes.listEvents);
+  void _onMeetingListButtonPressed() {
+    Navigator.pushNamed(context, Routes.listMeetings);
   }
 
-  void _onAddEventButtonPressed() {
-    Navigator.pushNamed(context, Routes.createEvent);
+  void _onAddQuizButtonPressed() {
+    Navigator.pushNamed(context, Routes.createQuiz);
+  }
+
+  void _onPlaceSelected(PlacesSearchResult place) {
+    Navigator.pushNamed(context, Routes.createMeeting, arguments: place);
   }
 
   void _onCameraMove(CameraPosition position) {
@@ -64,7 +67,8 @@ class _MapViewState extends State<MapView> {
   }
 
   void _onMapCreated(GoogleMapController controller) {
-    _controller.complete(controller);
+    _controller = controller;
+    _moveCamera(_center);
     _searchNearby();
   }
 
@@ -81,7 +85,10 @@ class _MapViewState extends State<MapView> {
             position: LatLng(item.geometry.location.lat, item.geometry.location.lng),
             infoWindow: InfoWindow(
                 title: item.name,
-                snippet: item.rating == null ? Strings.ratingAbsent : sprintf(Strings.rating, [item.rating.toInt()])),
+                snippet: item.rating == null ? Strings.ratingAbsent : sprintf(Strings.rating, [item.rating.toInt()]),
+                onTap: () {
+                  _onPlaceSelected(item);
+                }),
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
           ));
         });
@@ -96,24 +103,14 @@ class _MapViewState extends State<MapView> {
   Widget build(BuildContext context) {
     return Stack(
       children: <Widget>[
-        new FutureBuilder(
-            future: _initialLocation,
-            builder: (BuildContext context, AsyncSnapshot<LatLng> snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                return new GoogleMap(
-                    onMapCreated: _onMapCreated,
-                    myLocationEnabled: true,
-                    initialCameraPosition: CameraPosition(
-                      target: snapshot.data,
-                      zoom: _initialZoom,
-                    ),
-                    mapType: _currentMapType,
-                    markers: _markers,
-                    onCameraMove: _onCameraMove,
-                    onCameraIdle: _onCameraMoved);
-              }
-              return new Container();
-            }),
+        GoogleMap(
+            onMapCreated: _onMapCreated,
+            myLocationEnabled: true,
+            initialCameraPosition: CameraPosition(target: _center, zoom: _initialZoom - 20.0),
+            mapType: _currentMapType,
+            markers: _markers,
+            onCameraMove: _onCameraMove,
+            onCameraIdle: _onCameraMoved),
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Align(
@@ -122,18 +119,18 @@ class _MapViewState extends State<MapView> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
                 FloatingActionButton(
-                  heroTag: "eventListFloating",
-                  onPressed: _onEventListButtonPressed,
+                  heroTag: "meetingListFloating",
+                  onPressed: _onMeetingListButtonPressed,
                   materialTapTargetSize: MaterialTapTargetSize.padded,
                   backgroundColor: _buttonBackgroundColor,
                   child: const Icon(Icons.format_list_bulleted, size: 32.0),
                 ),
                 FloatingActionButton(
-                  heroTag: "addEventFloating",
-                  onPressed: _onAddEventButtonPressed,
+                  heroTag: "addQuizFloating",
+                  onPressed: _onAddQuizButtonPressed,
                   materialTapTargetSize: MaterialTapTargetSize.padded,
                   backgroundColor: _buttonBackgroundColor,
-                  child: const Icon(Icons.call, size: 32.0),
+                  child: const Icon(Icons.create, size: 32.0),
                 ),
                 FloatingActionButton(
                   heroTag: "mapTypeFloating",
@@ -150,16 +147,22 @@ class _MapViewState extends State<MapView> {
     );
   }
 
-  Future<LatLng> _getInitialLocation() async {
-    var location = new LocationManager.Location();
-
+  Future _setCurrentLocation() async {
     try {
+      var location = new LocationManager.Location();
       var currentLocation = await location.getLocation();
 
-      return new LatLng(currentLocation.latitude, currentLocation.longitude);
+      _center = new LatLng(currentLocation.latitude, currentLocation.longitude);
     } catch (ex) {
-      print("GetInitialLocation exception: ${ex.toString()}");
-      return _center;
+      print("SetCurrentLocation exception: ${ex.toString()}");
+    }
+
+    _moveCamera(_center);
+  }
+
+  void _moveCamera(LatLng location, {double zoom = _initialZoom}) {
+    if (_controller != null) {
+      _controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: location, zoom: zoom)));
     }
   }
 }
