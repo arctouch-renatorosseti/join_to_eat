@@ -5,8 +5,9 @@ import 'package:join_to_eat/app/presentation/sign_in/auth_view.dart';
 import 'package:join_to_eat/app/presentation/splash/splash_view.dart';
 import 'package:join_to_eat/app/utils/routes.dart';
 
-import 'presentation/create_event_view.dart';
-import 'presentation/list_events_view.dart';
+import 'presentation/create_meeting_view.dart';
+import 'presentation/create_quiz_view.dart';
+import 'presentation/list_meetings_view.dart';
 import 'resources/strings.dart';
 
 class MainApp extends StatelessWidget {
@@ -22,8 +23,9 @@ class MainApp extends StatelessWidget {
         Routes.root: (c) => SplashView(),
         Routes.login: (c) => AuthView(),
         Routes.main: (c) => MapView(),
-        Routes.createEvent: (c) => CreateEventView(),
-        Routes.listEvents: (c) => ListEventsView(),
+        Routes.createMeeting: (c) => CreateMeetingView(),
+        Routes.listMeetings: (c) => ListMeetingsView(),
+        Routes.createQuiz: (c) => CreateQuizView(),
       },
     );
   }
