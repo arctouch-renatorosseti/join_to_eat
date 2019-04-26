@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:join_to_eat/app/model/meeting.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
@@ -71,5 +72,7 @@ class MeetingRepository extends Repository {
     _firestoreProvider.updateMeetingCollection(meeting.toJson(), meeting.id);
   }
 
-  Future<List<Meeting>> fetchMeetings() {}
+  Future<List<DocumentSnapshot>> fetchMeetings() {
+    return _firestoreProvider.getAvailableMeetings();
+  }
 }

@@ -11,6 +11,13 @@ class FirestoreProvider {
     _firestore.collection("meetings").document(id).updateData({'meeting': data, 'merge': true});
   }
 
+  Future<List<DocumentSnapshot>> getAvailableMeetings() async {
+    return (await _firestore
+            .collection("meetings")
+            .getDocuments())
+        .documents;
+  }
+
   void saveUserCollection(Map<String, dynamic> data, String id) {
     _firestore.collection("users").document(id).setData({'user': data, 'merge': true});
   }
