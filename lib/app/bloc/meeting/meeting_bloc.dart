@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:join_to_eat/app/model/meeting.dart';
-import 'package:join_to_eat/app/model/single_event.dart';
 import 'package:join_to_eat/app/repository/repository.dart';
 
 class MeetingState extends Equatable {
@@ -14,37 +13,41 @@ class MeetingState extends Equatable {
   }
 }
 
-enum _MeetingEvent { showMeetings, createMeeting, updateMeeting, userJoin, leave, delete }
+enum MeetingEvent { showMeetings, createMeeting, updateMeeting, userJoin, leave, delete }
 
-class MeetingBloc extends Bloc<_MeetingEvent, MeetingState> {
+class MeetingBloc extends Bloc<MeetingEvent, MeetingState> {
   final _repository = MeetingRepository();
 
   @override
   MeetingState get initialState => MeetingState("", true);
 
   @override
-  Stream<MeetingState> mapEventToState(_MeetingEvent event) {
+  Stream<MeetingState> mapEventToState(MeetingEvent event) {
     switch (event) {
-      case _MeetingEvent.createMeeting:
+      case MeetingEvent.createMeeting:
         // TODO: Handle this case.
         break;
-      case _MeetingEvent.updateMeeting:
+      case MeetingEvent.updateMeeting:
         // TODO: Handle this case.
         break;
-      case _MeetingEvent.showMeetings:
+      case MeetingEvent.showMeetings:
         // TODO: Handle this case.
         break;
-      case _MeetingEvent.userJoin:
+      case MeetingEvent.userJoin:
         // TODO: Handle this case.
         break;
-      case _MeetingEvent.leave:
+      case MeetingEvent.leave:
         // TODO: Handle this case.
         break;
-      case _MeetingEvent.delete:
+      case MeetingEvent.delete:
         // TODO: Handle this case.
         break;
     }
     return null;
+  }
+
+  Future<String> getSignedUser() async {
+    return await _repository.getSignedUser();
   }
 
   void create(Meeting meeting) {

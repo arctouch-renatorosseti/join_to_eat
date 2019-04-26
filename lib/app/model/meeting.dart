@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'meeting.g.dart';
 
 @JsonSerializable()
@@ -13,7 +14,9 @@ class Meeting extends Equatable {
   DateTime time;
 
   Meeting({this.id, this.title, this.description, this.idMapPlace, this.users, this.time, this.expiredTime})
-      : super([id, title, description, idMapPlace, users, time, expiredTime]);
+      : super([id, title, description, idMapPlace, users, time, expiredTime]) {
+    users = new List<String>();
+  }
 
   factory Meeting.fromJson(Map<String, dynamic> json) => _$MeetingFromJson(json);
 

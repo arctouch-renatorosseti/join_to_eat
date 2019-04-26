@@ -26,7 +26,7 @@ class _MapViewState extends State<MapView> {
 
   static const num _searchRadius = 500;
 
-  final Set<Marker> _markers = {};
+  Set<Marker> _markers = {};
 
   LatLng _center = const LatLng(-27.544805723209087, -48.5015320032835); // ArcTouch Floripa
   LatLng _lastMapPosition;
@@ -79,8 +79,10 @@ class _MapViewState extends State<MapView> {
 
     if (result.status == "OK") {
       setState(() {
+        Set<Marker> newMarkers = {};
+
         result.results.forEach((item) {
-          _markers.add(Marker(
+          newMarkers.add(Marker(
             markerId: MarkerId(item.id),
             position: LatLng(item.geometry.location.lat, item.geometry.location.lng),
             infoWindow: InfoWindow(
@@ -92,6 +94,8 @@ class _MapViewState extends State<MapView> {
             icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
           ));
         });
+
+        _markers = newMarkers;
       });
     } else {
       Scaffold.of(context).showSnackBar(new SnackBar(content: new Text(Strings.nearbyPlaceError)));

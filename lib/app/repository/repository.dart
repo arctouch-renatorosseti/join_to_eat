@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:join_to_eat/app/model/meeting.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
 import 'package:join_to_eat/app/repository/preferences_provider.dart';
+
 import 'firestore_provider.dart';
 
 class Repository {
@@ -21,12 +22,12 @@ class UserRepository extends Repository {
   Future<bool> isEmailRegistered(String email) async {
     final userDocument = await _firestoreProvider.isEmailRegistered(email);
     bool status = userDocument != null;
-    if(status) _setUserSigned(userDocument.documentID);
+    if (status) _setUserSigned(userDocument.documentID);
     return status;
   }
 
   Future<void> _setUserSigned(String userId) async {
-      await _preferencesProvider.setUserSigned(userId);
+    await _preferencesProvider.setUserSigned(userId);
   }
 
   Future<bool> setUserSigned(String userId) async {
@@ -69,6 +70,10 @@ class MeetingRepository extends Repository {
 
   void updateMeetingCollection(Meeting meeting) {
     _firestoreProvider.updateMeetingCollection(meeting.toJson(), meeting.id);
+  }
+
+  Future<String> getSignedUser() async {
+    return await _preferencesProvider.getUserSigned();
   }
 
   Future<List<Meeting>> fetchMeetings() {}
