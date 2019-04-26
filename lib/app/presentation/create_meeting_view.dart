@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:join_to_eat/app/bloc/meeting/meeting_bloc.dart';
+import 'package:join_to_eat/app/model/meeting.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 
 class CreateMeetingView extends StatefulWidget {
@@ -10,10 +12,22 @@ class CreateMeetingView extends StatefulWidget {
 
 class _CreateMeetingViewState extends State<CreateMeetingView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final _bloc = MeetingBloc();
+  final Meeting _meeting = new Meeting();
+
+  @override
+  void initState() {
+    super.initState();
+
+    setupData();
+  }
 
   @override
   Widget build(BuildContext context) {
     final PlacesSearchResult place = ModalRoute.of(context).settings.arguments;
+
+    _meeting.idMapPlace = place.id;
+    _meeting.time = new DateTime.now();
 
     return Scaffold(
       appBar: AppBar(),
@@ -27,6 +41,9 @@ class _CreateMeetingViewState extends State<CreateMeetingView> {
               ListTile(
                 leading: const Icon(Icons.description),
                 title: TextFormField(
+                  onSaved: (value) {
+                    _meeting.description = value;
+                  },
                   decoration: InputDecoration(
                     hintText: Strings.hintMeetingDescription,
                   ),
@@ -45,6 +62,9 @@ class _CreateMeetingViewState extends State<CreateMeetingView> {
                       return Strings.meetingDurationInvalid;
                     }
                   },
+                  onSaved: (value) {
+                    _meeting.expiredTime = _meeting.time.add(new Duration(hours: int.parse(value)));
+                  },
                   decoration: InputDecoration(
                     hintText: Strings.hintMeetingDuration,
                   ),
@@ -53,7 +73,7 @@ class _CreateMeetingViewState extends State<CreateMeetingView> {
               new RaisedButton(
                 child: Text(Strings.buttonCreateMeeting),
                 onPressed: _onCreateMeetingButtonPressed,
-              )
+              ),
             ],
           ),
         ),
@@ -61,9 +81,17 @@ class _CreateMeetingViewState extends State<CreateMeetingView> {
     );
   }
 
+  void setupData() async {
+    _meeting.users.add(await _bloc.getSignedUser());
+  }
+
   void _onCreateMeetingButtonPressed() {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
+
+      _bloc.create(_meeting);
+
+      Navigator.pop(context);
     }
   }
 }
