@@ -50,8 +50,8 @@ class MeetingBloc extends Bloc<MeetingEvent, MeetingState> {
     return await _repository.getSignedUser();
   }
 
-  void create(Meeting meeting) {
-    _repository.saveMeetingCollection(meeting);
+  Future<String> create(Meeting meeting) {
+    return _repository.saveMeetingCollection(meeting);
   }
 
   void update(Meeting meeting) {
