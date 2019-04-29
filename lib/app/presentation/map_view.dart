@@ -1,11 +1,12 @@
 import 'dart:async';
 
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:join_to_eat/app/resources/constants.dart';
+import 'package:join_to_eat/app/resources/images.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
+import 'package:join_to_eat/app/utils/ScalerHelper.dart';
 import 'package:join_to_eat/app/utils/routes.dart';
 import 'package:location/location.dart' as LocationManager;
 import 'package:sprintf/sprintf.dart';
@@ -22,8 +23,6 @@ class _MapViewState extends State<MapView> {
   static const double _initialZoom = 16.5;
   static const String _typeFilter = "restaurant";
 
-  static const Color _buttonBackgroundColor = Colors.lightGreen;
-
   static const num _searchRadius = 500;
 
   Set<Marker> _markers = {};
@@ -32,6 +31,8 @@ class _MapViewState extends State<MapView> {
   LatLng _lastMapPosition;
 
   MapType _currentMapType = MapType.normal;
+
+  BitmapDescriptor _pinImage;
 
   @override
   void initState() {
@@ -91,7 +92,7 @@ class _MapViewState extends State<MapView> {
                 onTap: () {
                   _onPlaceSelected(item);
                 }),
-            icon: BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueCyan),
+            icon: _pinImage,
           ));
         });
 
@@ -105,6 +106,8 @@ class _MapViewState extends State<MapView> {
 
   @override
   Widget build(BuildContext context) {
+    _createMarkerIcon(context);
+
     return Stack(
       children: <Widget>[
         GoogleMap(
@@ -122,27 +125,39 @@ class _MapViewState extends State<MapView> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                FloatingActionButton(
-                  heroTag: "meetingListFloating",
-                  onPressed: _onMeetingListButtonPressed,
-                  materialTapTargetSize: MaterialTapTargetSize.padded,
-                  backgroundColor: _buttonBackgroundColor,
-                  child: const Icon(Icons.format_list_bulleted, size: 32.0),
-                ),
-                FloatingActionButton(
-                  heroTag: "addQuizFloating",
-                  onPressed: _onAddQuizButtonPressed,
-                  materialTapTargetSize: MaterialTapTargetSize.padded,
-                  backgroundColor: _buttonBackgroundColor,
-                  child: const Icon(Icons.create, size: 32.0),
-                ),
-                FloatingActionButton(
-                  heroTag: "mapTypeFloating",
-                  onPressed: _onMapTypeButtonPressed,
-                  materialTapTargetSize: MaterialTapTargetSize.padded,
-                  backgroundColor: _buttonBackgroundColor,
-                  child: const Icon(Icons.map, size: 32.0),
-                ),
+                SizedBox(
+                    width: ScalerHelper.getScaleWidth(56.0),
+                    height: ScalerHelper.getScaleHeight(56.0),
+                    child: FloatingActionButton(
+                        heroTag: "meetingListFloating",
+                        onPressed: _onMeetingListButtonPressed,
+                        backgroundColor: Colors.transparent,
+                        child: new ConstrainedBox(
+                          constraints: new BoxConstraints.expand(),
+                          child: new Image(image: AssetImage(Images.FLOATING_ALERTS_LIST)),
+                        ))),
+                SizedBox(
+                    width: ScalerHelper.getScaleWidth(72.0),
+                    height: ScalerHelper.getScaleHeight(72.0),
+                    child: FloatingActionButton(
+                        heroTag: "addQuizFloating",
+                        onPressed: _onAddQuizButtonPressed,
+                        backgroundColor: Colors.transparent,
+                        child: new ConstrainedBox(
+                          constraints: new BoxConstraints.expand(),
+                          child: new Image(image: AssetImage(Images.FLOATING_CALL_PEOPLE)),
+                        ))),
+                SizedBox(
+                    width: ScalerHelper.getScaleWidth(56.0),
+                    height: ScalerHelper.getScaleHeight(56.0),
+                    child: FloatingActionButton(
+                        heroTag: "mapTypeFloating",
+                        onPressed: _onMapTypeButtonPressed,
+                        backgroundColor: Colors.transparent,
+                        child: new ConstrainedBox(
+                          constraints: new BoxConstraints.expand(),
+                          child: new Image(image: AssetImage(Images.FLOATING_AROUND_ME)),
+                        ))),
               ],
             ),
           ),
@@ -167,6 +182,19 @@ class _MapViewState extends State<MapView> {
   void _moveCamera(LatLng location, {double zoom = _initialZoom}) {
     if (_controller != null) {
       _controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(target: location, zoom: zoom)));
+    }
+  }
+
+  Future<void> _createMarkerIcon(BuildContext context) async {
+    if (this._pinImage == null) {
+      final ImageConfiguration imageConfiguration =
+          createLocalImageConfiguration(context, size: ScalerHelper.getScaledSize(32.0, 40.0));
+
+      BitmapDescriptor.fromAssetImage(imageConfiguration, Images.IMAGE_MAP_PIN).then((value) {
+        setState(() {
+          this._pinImage = value;
+        });
+      });
     }
   }
 }
