@@ -1,6 +1,6 @@
+import 'dart:async';
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:join_to_eat/app/model/meeting.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
@@ -73,13 +73,13 @@ class MeetingRepository extends Repository {
 //    _firestoreProvider.updateMeetingCollection(meeting, meeting.id);
   }
 
-  Stream<QuerySnapshot> getCurrentMeetings() {
-    //return _firestoreProvider.getCurrentMeetings();
-    return null;
-  }
-
-  Future<List<DocumentSnapshot>> fetchMeetings() {
-    return _firestoreProvider.getAvailableMeetings();
+  Stream<Iterable<Meeting>> getCurrentMeetings() {
+    return _firestoreProvider.getCurrentMeetings().map((querySnap) => querySnap.documents.map((docSnap) => Meeting(
+        description: docSnap.data["description"],
+        idMapPlace: docSnap.data["idMapPlace"],
+        users: docSnap.data["users"].cast<String>(),
+        startTime: docSnap.data["startTime"],
+        endTime: docSnap.data["endTime"])));
   }
 
   Future<String> getSignedUser() async {

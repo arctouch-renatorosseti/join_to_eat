@@ -47,6 +47,10 @@ class MeetingBloc extends Bloc<MeetingEvent, MeetingState> {
     return await _repository.getSignedUser();
   }
 
+  Stream<Iterable<Meeting>> getCurrentMeetings() {
+    return _repository.getCurrentMeetings();
+  }
+
   /*
   void update(Meeting meeting) {
     _repository.saveMeetingCollection(meeting);

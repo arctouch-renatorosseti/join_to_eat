@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:join_to_eat/app/bloc/meeting/meeting_bloc.dart';
+import 'package:join_to_eat/app/model/meeting.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 
 class RadarView extends StatefulWidget {
@@ -23,29 +23,33 @@ class _RadarViewState extends State<RadarView> {
 
   Widget _buildMeetingsList() {
     return new StreamBuilder(
-        //TODO: stream: _bloc.getCurrentMeetings(),
-        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snap) {
-      if (snap.hasError) {
-        return Text("Error: ${snap.error}");
-      }
-
-      switch (snap.connectionState) {
-        case ConnectionState.waiting:
-          return const Text("Loading...");
-        default:
-          if (snap.data == null) {
-            return const Text("NO DATA");
+        stream: _bloc.getCurrentMeetings(),
+        builder: (BuildContext context, AsyncSnapshot<Iterable<Meeting>> snap) {
+          if (snap.hasError) {
+            return Text("Error: ${snap.error}");
           }
 
-          print("******* Data: $snap");
+          switch (snap.connectionState) {
+            case ConnectionState.waiting:
+              return const Text("Loading...");
+            default:
+              if (snap.data == null) {
+                return const Text("NO DATA");
+              }
 
-          return ListView.builder(
-            itemCount: snap.data.documents.length,
-            itemBuilder: (BuildContext context, int index) {
-              return new Text("Item $index");
-            },
-          );
-      }
-    });
+              print("******* Data: $snap");
+
+              List<Meeting> meetings = snap.data.toList();
+
+              return ListView.builder(
+                itemCount: meetings.length,
+                itemBuilder: (BuildContext context, int index) {
+                  Meeting current = meetings[index];
+
+                  return new Text("Item $index: ${current.description}");
+                },
+              );
+          }
+        });
   }
 }
