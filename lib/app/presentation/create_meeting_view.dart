@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -13,7 +14,7 @@ class CreateMeetingView extends StatefulWidget {
 class _CreateMeetingViewState extends State<CreateMeetingView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _bloc = MeetingBloc();
-  final Meeting _meeting = new Meeting();
+  final Meeting _meeting = Meeting();
 
   @override
   void initState() {
@@ -27,7 +28,7 @@ class _CreateMeetingViewState extends State<CreateMeetingView> {
     final PlacesSearchResult place = ModalRoute.of(context).settings.arguments;
 
     _meeting.idMapPlace = place.id;
-    _meeting.time = new DateTime.now();
+    _meeting.time = Timestamp.now();
 
     return Scaffold(
       appBar: AppBar(),
@@ -63,14 +64,15 @@ class _CreateMeetingViewState extends State<CreateMeetingView> {
                     }
                   },
                   onSaved: (value) {
-                    _meeting.expiredTime = _meeting.time.add(new Duration(hours: int.parse(value)));
+                    _meeting.expiredTime = Timestamp.fromMillisecondsSinceEpoch((Timestamp.now().millisecondsSinceEpoch + int.parse(value)*3600*1000));
+                    _bloc.onSave(_meeting);
                   },
                   decoration: InputDecoration(
                     hintText: Strings.hintMeetingDuration,
                   ),
                 ),
               ),
-              new RaisedButton(
+              RaisedButton(
                 child: Text(Strings.buttonCreateMeeting),
                 onPressed: _onCreateMeetingButtonPressed,
               ),
@@ -85,11 +87,10 @@ class _CreateMeetingViewState extends State<CreateMeetingView> {
     _meeting.users.add(await _bloc.getSignedUser());
   }
 
-  void _onCreateMeetingButtonPressed() {
+  Future<void> _onCreateMeetingButtonPressed() async {
     if (_formKey.currentState.validate()) {
       _formKey.currentState.save();
-
-      _bloc.create(_meeting);
+      _bloc.dispatch(MeetingEvent.createMeeting);
 
       Navigator.pop(context);
     }

@@ -1,10 +1,12 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:join_to_eat/app/model/meeting.dart';
 
 class FirestoreProvider {
   Firestore _firestore = Firestore.instance;
 
-  void saveMeetingCollection(Map<String, dynamic> data) {
-    _firestore.collection("meetings").document().setData({'meeting': data, 'merge': true});
+  Future<void> saveMeetingCollection(Meeting meeting) async {
+
+    _firestore.collection("meetings").document().setData({'meeting': meeting, 'merge': true});
   }
 
   void updateMeetingCollection(Map<String, dynamic> data, String id) {
@@ -12,10 +14,7 @@ class FirestoreProvider {
   }
 
   Future<List<DocumentSnapshot>> getAvailableMeetings() async {
-    return (await _firestore
-            .collection("meetings")
-            .getDocuments())
-        .documents;
+    return (await _firestore.collection("meetings").where("meeting.expiredTime", isGreaterThan: Timestamp.now()).getDocuments()).documents;
   }
 
   void saveUserCollection(Map<String, dynamic> data, String id) {

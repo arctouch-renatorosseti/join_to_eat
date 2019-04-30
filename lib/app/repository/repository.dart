@@ -65,12 +65,12 @@ class UserRepository extends Repository {
 }
 
 class MeetingRepository extends Repository {
-  void saveMeetingCollection(Meeting meeting) {
-    _firestoreProvider.saveMeetingCollection(meeting.toJson());
+  Future<void> saveMeetingCollection(Meeting meeting) async {
+    await _firestoreProvider.saveMeetingCollection(meeting);
   }
 
   void updateMeetingCollection(Meeting meeting) {
-    _firestoreProvider.updateMeetingCollection(meeting.toJson(), meeting.id);
+//    _firestoreProvider.updateMeetingCollection(meeting, meeting.id);
   }
 
 
