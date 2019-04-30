@@ -34,4 +34,7 @@ class Strings {
   static const String questionTitle = "Question";
   static const String optionsTitle = "Option %d";
   static const String optionEmptyError = "Please enter an option.";
+
+  // RADAR
+  static const String radarTitle = "Radar";
 }

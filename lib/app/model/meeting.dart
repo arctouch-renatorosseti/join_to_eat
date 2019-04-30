@@ -1,21 +1,15 @@
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
-import 'package:json_annotation/json_annotation.dart';
 
 class Meeting extends Equatable {
-  String id;
   String description;
   String idMapPlace;
   List<String> users;
-  Timestamp time;
-  Timestamp expiredTime;
+  Timestamp startTime;
+  Timestamp endTime;
 
-  Meeting({this.id, this.description, this.idMapPlace, this.users, this.time, this.expiredTime})
-      : super([id, description, idMapPlace, users, time, expiredTime]) {
+  Meeting({this.description, this.idMapPlace, this.users, this.startTime, this.endTime})
+      : super([description, idMapPlace, users, startTime, endTime]) {
     users = new List<String>();
   }
-
-
-
 }

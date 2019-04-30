@@ -28,7 +28,7 @@ class _CreateMeetingViewState extends State<CreateMeetingView> {
     final PlacesSearchResult place = ModalRoute.of(context).settings.arguments;
 
     _meeting.idMapPlace = place.id;
-    _meeting.time = Timestamp.now();
+    _meeting.startTime = Timestamp.now();
 
     return Scaffold(
       appBar: AppBar(),
@@ -64,7 +64,8 @@ class _CreateMeetingViewState extends State<CreateMeetingView> {
                     }
                   },
                   onSaved: (value) {
-                    _meeting.expiredTime = Timestamp.fromMillisecondsSinceEpoch((Timestamp.now().millisecondsSinceEpoch + int.parse(value)*3600*1000));
+                    _meeting.endTime = Timestamp.fromMillisecondsSinceEpoch(
+                        (Timestamp.now().millisecondsSinceEpoch + int.parse(value) * 3600 * 1000));
                     _bloc.onSave(_meeting);
                   },
                   decoration: InputDecoration(
