@@ -59,6 +59,10 @@ class _MapViewState extends State<MapView> {
     Navigator.pushNamed(context, Routes.createMeeting, arguments: place);
   }
 
+  void _onRadarButtonPressed() {
+    Navigator.pushNamed(context, Routes.radar);
+  }
+
   void _onCameraMove(CameraPosition position) {
     _lastMapPosition = position.target;
   }
@@ -151,8 +155,8 @@ class _MapViewState extends State<MapView> {
                     width: ScalerHelper.getScaleWidth(56.0),
                     height: ScalerHelper.getScaleHeight(56.0),
                     child: FloatingActionButton(
-                        heroTag: "mapTypeFloating",
-                        onPressed: _onMapTypeButtonPressed,
+                        heroTag: "radarFloating",
+                        onPressed: _onRadarButtonPressed,
                         backgroundColor: Colors.transparent,
                         child: new ConstrainedBox(
                           constraints: new BoxConstraints.expand(),

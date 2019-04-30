@@ -27,23 +27,18 @@ class MeetingBloc extends Bloc<MeetingEvent, MeetingState> {
   Stream<MeetingState> mapEventToState(MeetingEvent event) async* {
     switch (event) {
       case MeetingEvent.createMeeting:
-        await _repository.saveMeetingCollection(_meeting);
-        yield MeetingState(Routes.listMeetings,true);
+        await _repository.insertMeeting(_meeting);
+        yield MeetingState(Routes.listMeetings, true);
         break;
       case MeetingEvent.updateMeeting:
-
         break;
       case MeetingEvent.showMeetings:
-
         break;
       case MeetingEvent.userJoin:
-
         break;
       case MeetingEvent.leave:
-
         break;
       case MeetingEvent.delete:
-
         break;
     }
   }
@@ -52,9 +47,11 @@ class MeetingBloc extends Bloc<MeetingEvent, MeetingState> {
     return await _repository.getSignedUser();
   }
 
+  /*
   void update(Meeting meeting) {
     _repository.saveMeetingCollection(meeting);
   }
+  */
 
   onSave(Meeting value) => _meeting = value;
 }

@@ -65,14 +65,18 @@ class UserRepository extends Repository {
 }
 
 class MeetingRepository extends Repository {
-  Future<void> saveMeetingCollection(Meeting meeting) async {
-    await _firestoreProvider.saveMeetingCollection(meeting);
+  Future<void> insertMeeting(Meeting meeting) async {
+    await _firestoreProvider.insertMeeting(meeting);
   }
 
   void updateMeetingCollection(Meeting meeting) {
 //    _firestoreProvider.updateMeetingCollection(meeting, meeting.id);
   }
 
+  Stream<QuerySnapshot> getCurrentMeetings() {
+    //return _firestoreProvider.getCurrentMeetings();
+    return null;
+  }
 
   Future<List<DocumentSnapshot>> fetchMeetings() {
     return _firestoreProvider.getAvailableMeetings();

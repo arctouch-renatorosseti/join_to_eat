@@ -5,4 +5,5 @@ class Routes {
   static const createMeeting = "/createMeeting";
   static const listMeetings = "/listMeetings";
   static const createQuiz = "/createQuiz";
+  static const radar = "/radar";
 }
