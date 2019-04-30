@@ -33,7 +33,6 @@ class SplashBloc extends Bloc<_SplashEvent, SplashState> {
   Stream<SplashState> mapEventToState(_SplashEvent event) async* {
     switch (event) {
       case _SplashEvent.checkAuthentication:
-        _meetingRepository.fetchMeetings().then((onValue) => print("Meetings size ${onValue.length}"));
         yield* await _repository.isUserSigned().then((value) => navigateToView(value));
         break;
     }

@@ -21,12 +21,11 @@ class FirestoreProvider {
     _firestore.collection(COLLECTION_MEETINGS).document(id).updateData({'meeting': data, 'merge': true});
   }
 
-  Future<List<DocumentSnapshot>> getAvailableMeetings() async {
-    return (await _firestore
-            .collection(COLLECTION_MEETINGS)
-            .where("endTime", isGreaterThan: Timestamp.now())
-            .getDocuments())
-        .documents;
+  Stream<QuerySnapshot> getCurrentMeetings() {
+    return _firestore
+        .collection(COLLECTION_MEETINGS)
+        .where("endTime", isGreaterThanOrEqualTo: Timestamp.now())
+        .snapshots();
   }
 
   void saveUserCollection(Map<String, dynamic> data, String id) {
