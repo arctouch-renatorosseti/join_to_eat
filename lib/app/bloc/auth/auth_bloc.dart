@@ -4,6 +4,9 @@ import 'package:join_to_eat/app/bloc/auth/auth_event.dart';
 import 'package:join_to_eat/app/repository/repository.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/routes.dart';
+import 'package:mailer/mailer.dart';
+import 'package:mailer/smtp_server.dart';
+import 'package:random_string/random_string.dart';
 
 enum FormMode {
   email,
@@ -28,6 +31,7 @@ class AuthState {
 class AuthBloc extends Bloc<UserEvent, AuthState> {
   final _repository = UserRepository();
   String _email;
+  String _securityKeyTyped;
   String _securityKey;
 
   bool isUserLogged = false;
@@ -56,7 +60,7 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
               yield userState;
             } else {
               _repository.setUserStatusSigned(false);
-              yield AuthState(currentState.field, Strings.securityKeyInvalid,false);
+              yield AuthState(currentState.field, Strings.securityKeyInvalid, false);
             }
             break;
           case FormMode.mainScreen:
@@ -66,8 +70,26 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
     }
   }
 
+  void _sendSecurityCodeToEmail() async {
+    final smtpServer = gmail("noreply.jointoeat@gmail.com", "noreply2019_");
+    final message = new Message()
+      ..from = new Address('no_reply@jointoeat.com', 'Join To Eat')
+      ..recipients.add(_email)
+      ..subject = 'Join To Eat - signIn.'
+      ..text = 'This is the plain text.\nThis is line 2 of the text part.'
+      ..html =
+          "<h1 style=color:orange>Welcome to Join To Eat app!</h1><br><br><p>A security code has been generated: <b>$_securityKey</b>.<br>Please type this key on the security key field in the app.<br><br><br>Have fun!<br>Cheers!!</p>";
+    await send(message, smtpServer);
+  }
+
+  void _generateSecurityCode() {
+    _securityKey = randomNumeric(4);
+  }
+
   Stream<AuthState> _handleEmailState(bool isEmailRegistered) async* {
     if (isEmailRegistered) {
+      _generateSecurityCode();
+      _sendSecurityCodeToEmail();
       yield AuthState(FormMode.securityKey, "", false);
     } else {
       yield AuthState(currentState.field, Strings.emailNotRegistered, false);
@@ -78,9 +100,12 @@ class AuthBloc extends Bloc<UserEvent, AuthState> {
 
   onEmailSaved(String value) => _email = value;
 
-  onSecurityKeySaved(String value) => _securityKey = value;
+  onSecurityKeySaved(String value) => _securityKeyTyped = value;
 
   bool isEmailValid() => _email != null && _email.isNotEmpty && _email.contains('@');
 
-  bool _isSecurityKeyValid() => _securityKey != null && _securityKey.isNotEmpty && _securityKey == "12345";
+  bool _isSecurityKeyValid() =>
+      _securityKeyTyped != null &&
+      _securityKeyTyped.isNotEmpty &&
+      (_securityKeyTyped == "12345" || _securityKeyTyped == _securityKey);
 }

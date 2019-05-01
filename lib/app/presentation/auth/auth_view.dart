@@ -45,9 +45,20 @@ class _AuthForm extends State<AuthView> {
                 child: Form(
                   key: _formKey,
                   child: ListView(
-                    padding: EdgeInsets.all(16.0),
-                    shrinkWrap: true,
+                    padding: EdgeInsets.all(20.0),
                     children: <Widget>[
+                      Visibility(
+                        visible: state.field == FormMode.securityKey,
+                        child: Center(
+                          child: Text(
+                            Strings.securityKeyMessage,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.orange,
+                            ),
+                          ),
+                        ),
+                      ),
                       CustomFieldSignIn(
                           validator: _bloc.validateField,
                           onSaved: (state.field == FormMode.email) ? _bloc.onEmailSaved : _bloc.onSecurityKeySaved,

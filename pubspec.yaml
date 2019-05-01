@@ -42,6 +42,8 @@ dependencies:
   flutter_google_places: ^0.2.2
   location: ^2.3.5
   sprintf: ^4.0.2
+  mailer: 2.3.0
+  random_string: 0.0.2
 
 dev_dependencies:
   build_runner: ^1.0.0

@@ -2,7 +2,8 @@ class Strings {
   static const String appName = 'Join to eat';
   //LOGIN
   static const String email = 'Email from your PingBoard profile';
-  static const String securityKey = 'Security key sent to your email';
+  static const String securityKey = 'Security key';
+  static const String securityKeyMessage = 'A security code has been sent to your email,\nplease type it on the field below.';
   static const String login = 'Entrar';
   static const String createAnAccount = 'Criar uma conta';
   static const String unknownError = 'Erro inesperado, tente novamente mais tarde.';
