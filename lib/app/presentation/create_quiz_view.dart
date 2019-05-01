@@ -9,7 +9,7 @@ class CreateQuizView extends StatefulWidget {
 
 class _CreateQuizViewState extends State<CreateQuizView> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final List<String> _options = new List<String>(6);
+  List<String> _options = new List<String>(6);
 
   @override
   void initState() {
@@ -21,19 +21,28 @@ class _CreateQuizViewState extends State<CreateQuizView> {
     return Scaffold(
       appBar: AppBar(title: Text(Strings.createQuizTitle)),
       body: Container(
-          padding: EdgeInsets.all(20.0),
-          child: Form(
-              key: this._formKey,
-              child: ListView.builder(
-                itemCount: _options.length,
-                itemBuilder: (BuildContext context, int index) => optionBuilder(context, index),
-              ))),
+        padding: EdgeInsets.all(20.0),
+        child: Form(
+          key: this._formKey,
+          child: ListView.builder(
+            itemCount: _options.length,
+            itemBuilder: (BuildContext context, int index) => optionBuilder(context, index),
+          ),
+        ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.add),
+        onPressed: () {
+          _options.add("");
+        },
+      ),
     );
   }
 
   Widget optionBuilder(BuildContext context, int index) {
     return TextFormField(
-      decoration: InputDecoration(labelText: sprintf(index == 0 ? Strings.questionTitle : Strings.optionsTitle, [index])),
+      decoration:
+          InputDecoration(labelText: sprintf(index == 0 ? Strings.questionTitle : Strings.optionsTitle, [index])),
       validator: (value) {
         if (value.isEmpty) {
           return Strings.optionEmptyError;
