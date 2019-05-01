@@ -33,7 +33,7 @@ class _CreateQuizViewState extends State<CreateQuizView> {
 
   Widget optionBuilder(BuildContext context, int index) {
     return TextFormField(
-      decoration: InputDecoration(labelText: sprintf(Strings.optionsTitle, [index])),
+      decoration: InputDecoration(labelText: sprintf(index == 0 ? Strings.questionTitle : Strings.optionsTitle, [index])),
       validator: (value) {
         if (value.isEmpty) {
           return Strings.optionEmptyError;
