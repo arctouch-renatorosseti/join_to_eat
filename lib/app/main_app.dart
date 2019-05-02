@@ -5,7 +5,7 @@ import 'package:join_to_eat/app/presentation/splash/splash_view.dart';
 import 'package:join_to_eat/app/utils/routes.dart';
 
 import 'presentation/create_meeting_view.dart';
-import 'presentation/create_quiz_view.dart';
+import 'package:join_to_eat/app/presentation/quiz/create_quiz_view.dart';
 import 'presentation/list_meetings_view.dart';
 import 'presentation/radar_view.dart';
 import 'resources/strings.dart';
