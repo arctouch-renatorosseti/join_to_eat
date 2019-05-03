@@ -37,4 +37,8 @@ class FirestoreProvider {
         .documents
         .first;
   }
+
+  Future<DocumentSnapshot> getUser(String id) {
+    return _firestore.collection(COLLECTION_USERS).document(id).get();
+  }
 }

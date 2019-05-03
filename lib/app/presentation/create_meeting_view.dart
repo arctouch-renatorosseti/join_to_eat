@@ -27,7 +27,7 @@ class _CreateMeetingViewState extends State<CreateMeetingView> {
   Widget build(BuildContext context) {
     final PlacesSearchResult place = ModalRoute.of(context).settings.arguments;
 
-    _meeting.idMapPlace = place.id;
+    _meeting.idMapPlace = place.placeId;
     _meeting.startTime = Timestamp.now();
 
     return Scaffold(
