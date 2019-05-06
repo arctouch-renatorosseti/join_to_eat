@@ -10,6 +10,8 @@ class Meeting extends Equatable {
 
   Meeting({this.description, this.idMapPlace, this.users, this.startTime, this.endTime})
       : super([description, idMapPlace, users, startTime, endTime]) {
-    users = new List<String>();
+    if (users == null) {
+      users = List<String>();
+    }
   }
 }

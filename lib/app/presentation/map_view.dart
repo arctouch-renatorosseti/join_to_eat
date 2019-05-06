@@ -3,7 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:join_to_eat/app/resources/constants.dart';
+import 'package:join_to_eat/app/repository/repository.dart';
 import 'package:join_to_eat/app/resources/images.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/ScalerHelper.dart';
@@ -17,7 +17,6 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
-  GoogleMapsPlaces _googleMapsPlaces = GoogleMapsPlaces(apiKey: Constants.GOOGLE_MAPS_API_KEY);
   GoogleMapController _controller;
 
   static const double _initialZoom = 16.5;
@@ -80,7 +79,7 @@ class _MapViewState extends State<MapView> {
   void _searchNearby() async {
     var location = new Location(_lastMapPosition.latitude, _lastMapPosition.longitude);
 
-    final result = await _googleMapsPlaces.searchNearbyWithRadius(location, _searchRadius, type: _typeFilter);
+    final result = await Repository.places.searchNearbyWithRadius(location, _searchRadius, type: _typeFilter);
 
     if (result.status == "OK") {
       setState(() {

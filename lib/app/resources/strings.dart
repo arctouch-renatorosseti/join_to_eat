@@ -37,5 +37,12 @@ class Strings {
   static const String optionEmptyError = "Please enter an option.";
 
   // RADAR
+  static const String radarLoadingCard = "Loading...";
   static const String radarTitle = "Radar";
+  static const String radarPartySize = "%d Already Joined";
+  static const String radarNoCreator = "No creator";
+  static const String radarCreator = "Created By: ";
+  static const String radarNoOneJoined = "No one joined yet. Sad face.";
+  static const String radarDistance = "%d m";
+  static const String radarUntitledEvent = "Cool event";
 }
