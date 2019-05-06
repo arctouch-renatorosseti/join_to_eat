@@ -40,7 +40,7 @@ class _RadarCardState extends State<RadarCard> {
 
   @override
   Widget build(BuildContext context) {
-    final locale = Localizations.localeOf(context).toLanguageTag();
+    final locale = Localizations.localeOf(context).toString();
 
     return BlocBuilder(
         bloc: _bloc,

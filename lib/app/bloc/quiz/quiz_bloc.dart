@@ -13,14 +13,19 @@ class QuizState {
 }
 
 class QuizBloc extends Bloc<QuizEvent, QuizState> {
+
+  int currentOptionNumbers = 3;
+
   @override
-  QuizState get initialState => QuizState(3, false);
+  QuizState get initialState => QuizState(currentOptionNumbers, false);
 
   @override
   Stream<QuizState> mapEventToState(QuizEvent event) async* {
     switch (event) {
       case QuizEvent.ADD_QUIZ_OPTION:
-        yield QuizState((initialState.optionNumbers + 1 > 6) ? 6 : initialState.optionNumbers + 1, false);
+        print("Estou aqui ${initialState.optionNumbers}");
+        currentOptionNumbers++;
+        yield QuizState((currentOptionNumbers > 6) ? 6 : currentOptionNumbers, false);
         break;
     }
   }
