@@ -33,11 +33,31 @@ class _CreateQuizViewState extends State<CreateQuizView> {
               ),
             ),
       ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          _quizBloc.dispatch(QuizEvent.ADD_QUIZ_OPTION);
-        },
+      floatingActionButton:  Column(
+        crossAxisAlignment: CrossAxisAlignment.end,
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 5.0),
+            child: FloatingActionButton(
+              heroTag: "addFloating",
+              child: Icon(Icons.add),
+              onPressed: () {
+                _quizBloc.dispatch(QuizEvent.ADD_QUIZ_OPTION);
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 5.0),
+            child: FloatingActionButton(
+              heroTag: "saveFloation",
+              child: Icon(Icons.save),
+              onPressed: () {
+                Navigator.pop(context);
+              },
+            ),
+          ),
+        ],
       ),
     );
   }
