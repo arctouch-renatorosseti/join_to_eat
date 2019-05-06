@@ -2,13 +2,8 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:join_to_eat/app/meeting/meeting_bloc.dart';
-import 'package:join_to_eat/app/meeting/meeting_event.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
-//import 'package:geolocator/geolocator.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 class ViewMaps extends StatefulWidget {
   @override

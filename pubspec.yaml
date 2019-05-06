@@ -14,7 +14,7 @@ description: A social join to eat app which will find the perfect eating compani
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.1.0 <3.0.0"
+  sdk: ">=2.2.0 <3.0.0"
 
 dependencies:
   flutter:
@@ -23,22 +23,33 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
-  json_annotation: ^2.0.0
+  json_annotation: ^2.2.0
   cached_network_image: ^0.7.0
   rxdart: ^0.21.0
   intl: ^0.15.8
   connectivity: ^0.4.2
-  flutter_bloc: ^0.9.0
+  flutter_bloc: ^0.11.1
+  equatable: ^0.2.3
   shimmer: ^1.0.0
   gradient_app_bar: ^0.0.1
-  google_maps_flutter: ^0.5.7
-  permission_handler: ^3.0.0
-  geolocator: ^3.0.1
+  google_maps_flutter: ^0.5.6
+  cloud_firestore: ^0.9.13+1
+  firebase_ml_vision: ^0.7.0
+  path_provider: ^0.5.0+1
+  json_serializable: ^2.2.1
+  kiwi: ^0.1.0
+  shared_preferences: 0.5.2
+  flutter_google_places: ^0.2.2
   location: ^2.3.5
+  sprintf: ^4.0.2
+  mailer: 2.3.0
+  random_string: 0.0.2
 
 dev_dependencies:
+  build_runner: ^1.0.0
   flutter_test:
     sdk: flutter
+  json_annotation: ^2.2.0
 
 
 # For information on the generic Dart part of this file, see the
@@ -53,6 +64,8 @@ flutter:
   uses-material-design: true
   assets:
   - assets/
+  - assets/data/
+  - assets/images/
   #  - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

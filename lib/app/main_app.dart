@@ -1,26 +1,36 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:join_to_eat/main.dart';
+import 'package:join_to_eat/app/presentation/auth/auth_view.dart';
+import 'package:join_to_eat/app/presentation/map_view.dart';
+import 'package:join_to_eat/app/presentation/splash/splash_view.dart';
+import 'package:join_to_eat/app/utils/routes.dart';
+
+import 'presentation/create_meeting_view.dart';
+import 'package:join_to_eat/app/presentation/quiz/create_quiz_view.dart';
+import 'presentation/list_meetings_view.dart';
+import 'presentation/radar_view.dart';
+import 'resources/strings.dart';
+import 'utils/ScalerHelper.dart';
 
 class MainApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    ScalerHelper.setDesignScreenSize(360.0, 640.0);
+
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: Strings.appName,
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // Try running your application with "flutter run". You'll see the
-        // application has a blue toolbar. Then, without quitting the app, try
-        // changing the primarySwatch below to Colors.green and then invoke
-        // "hot reload" (press "r" in the console where you ran "flutter run",
-        // or simply save your changes to "hot reload" in a Flutter IDE).
-        // Notice that the counter didn't reset back to zero; the application
-        // is not restarted.
         primarySwatch: Colors.orange,
       ),
-      home: MyHomePage(title: 'Flutter Demo Home Page'),
+      routes: {
+        Routes.root: (c) => SplashView(),
+        Routes.login: (c) => AuthView(),
+        Routes.main: (c) => MapView(),
+        Routes.createMeeting: (c) => CreateMeetingView(),
+        Routes.listMeetings: (c) => ListMeetingsView(),
+        Routes.createQuiz: (c) => CreateQuizView(),
+        Routes.radar: (c) => RadarView(),
+      },
     );
   }
 }
