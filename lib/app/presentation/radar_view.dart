@@ -3,6 +3,8 @@ import 'package:join_to_eat/app/bloc/meeting/meeting_bloc.dart';
 import 'package:join_to_eat/app/model/meeting.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 
+import 'widgets/radar_card.dart';
+
 class RadarView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _RadarViewState();
@@ -37,18 +39,11 @@ class _RadarViewState extends State<RadarView> {
                 return const Text("NO DATA");
               }
 
-              print("******* Data: $snap");
-
               List<Meeting> meetings = snap.data.toList();
 
               return ListView.builder(
-                itemCount: meetings.length,
-                itemBuilder: (BuildContext context, int index) {
-                  Meeting current = meetings[index];
-
-                  return new Text("Item $index: ${current.description}");
-                },
-              );
+                  itemCount: meetings.length,
+                  itemBuilder: (BuildContext context, int index) => RadarCard(meeting: meetings[index]));
           }
         });
   }
