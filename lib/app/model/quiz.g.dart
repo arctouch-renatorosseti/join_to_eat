@@ -1,17 +1,17 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'questionary.dart';
+part of 'quiz.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-Questionary _$QuestionaryFromJson(Map<String, dynamic> json) {
-  return Questionary(
+Quiz _$QuizFromJson(Map<String, dynamic> json) {
+  return Quiz(
       question: json['question'], answersOptions: json['answersOptions']);
 }
 
-Map<String, dynamic> _$QuestionaryToJson(Questionary instance) =>
+Map<String, dynamic> _$QuizToJson(Quiz instance) =>
     <String, dynamic>{
       'question': instance.question,
       'answersOptions': instance.answersOptions

@@ -5,6 +5,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:join_to_eat/app/model/meeting.dart';
+import 'package:join_to_eat/app/model/option_quiz.dart';
+import 'package:join_to_eat/app/model/quiz.dart';
 import 'package:join_to_eat/app/model/user.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
 import 'package:join_to_eat/app/repository/preferences_provider.dart';
@@ -47,7 +49,10 @@ class UserRepository extends Repository {
 
   Future<bool> isUserSigned() async {
     bool isUserSaved = false;
-    await _preferencesProvider.getUserSigned().then((onValue) => isUserSaved = onValue.toString().isNotEmpty);
+    await _preferencesProvider.getUserSigned().then((onValue) =>
+    isUserSaved = onValue
+        .toString()
+        .isNotEmpty);
     return await _preferencesProvider.getUserSignedStatus() && isUserSaved;
   }
 
@@ -80,12 +85,14 @@ class MeetingRepository extends Repository {
   }
 
   Stream<Iterable<Meeting>> getCurrentMeetings() {
-    return _firestoreProvider.getCurrentMeetings().map((querySnap) => querySnap.documents.map((docSnap) => Meeting(
-        description: docSnap.data["description"],
-        idMapPlace: docSnap.data["idMapPlace"],
-        users: List.from(docSnap.data["users"]),
-        startTime: docSnap.data["startTime"],
-        endTime: docSnap.data["endTime"])));
+    return _firestoreProvider.getCurrentMeetings().map((querySnap) =>
+        querySnap.documents.map((docSnap) =>
+            Meeting(
+                description: docSnap.data["description"],
+                idMapPlace: docSnap.data["idMapPlace"],
+                users: List.from(docSnap.data["users"]),
+                startTime: docSnap.data["startTime"],
+                endTime: docSnap.data["endTime"])));
   }
 
   Future<String> getSignedUser() async {
@@ -100,5 +107,19 @@ class MeetingRepository extends Repository {
     }
 
     return User.fromJson(Map.from(docSnap.data["user"]));
+  }
+}
+
+class QuizRepository extends Repository {
+
+  Future<void> insertQuiz(Quiz quiz, List<OptionQuiz> options) async {
+    List<String> idOptions = [];
+    for (OptionQuiz option in options) {
+      await _firestoreProvider.insertOptionQuiz(option).then((onValue) {
+        idOptions.add(onValue.documentID);
+      });
+    }
+    quiz.answersOptions = idOptions;
+    await _firestoreProvider.insertQuiz(quiz);
   }
 }

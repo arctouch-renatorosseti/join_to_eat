@@ -38,7 +38,7 @@ class _CreateMeetingViewState extends State<CreateMeetingView> {
           key: this._formKey,
           child: ListView(
             children: <Widget>[
-              ListTile(leading: const Icon(Icons.location_on), title: new Text(place.name)),
+              ListTile(leading: const Icon(Icons.location_on), title: Text(place.name)),
               ListTile(
                 leading: const Icon(Icons.description),
                 title: TextFormField(
