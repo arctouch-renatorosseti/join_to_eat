@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:join_to_eat/app/presentation/auth/auth_view.dart';
 import 'package:join_to_eat/app/presentation/map_view.dart';
+import 'package:join_to_eat/app/presentation/meeting/meeting_details_view.dart';
 import 'package:join_to_eat/app/presentation/splash/splash_view.dart';
 import 'package:join_to_eat/app/utils/routes.dart';
 
@@ -30,6 +31,7 @@ class MainApp extends StatelessWidget {
         Routes.listMeetings: (c) => ListMeetingsView(),
         Routes.createQuiz: (c) => CreateQuizView(),
         Routes.radar: (c) => RadarView(),
+        Routes.meetingDetails: (c) => MeetingDetailsView(),
       },
     );
   }

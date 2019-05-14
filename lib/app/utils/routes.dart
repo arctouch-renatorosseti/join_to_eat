@@ -6,4 +6,5 @@ class Routes {
   static const listMeetings = "/listMeetings";
   static const createQuiz = "/createQuiz";
   static const radar = "/radar";
+  static const meetingDetails = "/meetingDetails";
 }
