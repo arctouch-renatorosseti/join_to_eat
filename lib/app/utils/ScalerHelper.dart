@@ -43,6 +43,14 @@ class ScalerHelper {
     return new Size(getScaleWidth(width), getScaleHeight(height));
   }
 
+  static double screenWidth() {
+    return _currentSize.width;
+  }
+
+  static double screenHeight() {
+    return _currentSize.height;
+  }
+
   static void _checkArea() {
     if (_designArea == null || _currentArea == null) {
       return;
