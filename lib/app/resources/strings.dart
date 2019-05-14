@@ -3,7 +3,8 @@ class Strings {
   //LOGIN
   static const String email = 'Email from your PingBoard profile';
   static const String securityKey = 'Security key';
-  static const String securityKeyMessage = 'A security code has been sent to your email,\nplease type it on the field below.';
+  static const String securityKeyMessage =
+      'A security code has been sent to your email,\nplease type it on the field below.';
   static const String login = 'Entrar';
   static const String createAnAccount = 'Criar uma conta';
   static const String unknownError = 'Erro inesperado, tente novamente mais tarde.';
@@ -45,4 +46,6 @@ class Strings {
   static const String radarNoOneJoined = "No one joined yet. Sad face.";
   static const String radarDistance = "%d m";
   static const String radarUntitledEvent = "Cool event";
+  static const String radarEmpty = "No events planned.";
+  static const String radarHappeningNow = "Happening now!";
 }
