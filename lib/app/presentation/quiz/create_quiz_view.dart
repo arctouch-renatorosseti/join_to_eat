@@ -10,6 +10,7 @@ class CreateQuizView extends StatefulWidget {
 }
 
 class _CreateQuizViewState extends State<CreateQuizView> {
+  final int INDEX_QUESTION = 0;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final QuizBloc _quizBloc = QuizBloc();
 
@@ -33,7 +34,7 @@ class _CreateQuizViewState extends State<CreateQuizView> {
               ),
             ),
       ),
-      floatingActionButton:  Column(
+      floatingActionButton: Column(
         crossAxisAlignment: CrossAxisAlignment.end,
         mainAxisAlignment: MainAxisAlignment.end,
         children: <Widget>[
@@ -53,6 +54,7 @@ class _CreateQuizViewState extends State<CreateQuizView> {
               heroTag: "saveFloation",
               child: Icon(Icons.save),
               onPressed: () {
+                _quizBloc.dispatch(QuizEvent.SAVE_QUIZ);
                 Navigator.pop(context);
               },
             ),
@@ -64,8 +66,11 @@ class _CreateQuizViewState extends State<CreateQuizView> {
 
   Widget optionBuilder(BuildContext context, int index) {
     return TextFormField(
-      decoration:
-          InputDecoration(labelText: sprintf(index == 0 ? Strings.questionTitle : Strings.optionsTitle, [index])),
+      decoration: InputDecoration(
+          labelText: sprintf(index == INDEX_QUESTION ? Strings.questionTitle : Strings.optionsTitle, [index])),
+      onSaved: (value) {
+        (index == INDEX_QUESTION) ? _quizBloc.onSaveQuestion(value) : _quizBloc.onSaveOptionAnswers(value, index);
+      },
       validator: (value) {
         if (value.isEmpty) {
           return Strings.optionEmptyError;
