@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:join_to_eat/app/bloc/splash/splash_bloc.dart';
-import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/ScalerHelper.dart';
 import 'package:join_to_eat/app/utils/widgets/routing_wrapper.dart';
 
@@ -26,15 +25,8 @@ class _SplashViewState extends State<SplashView> {
     return BlocBuilder(
         bloc: _splashBloc,
         builder: (context, state) => RoutingWrapper(
-              route: state.route?.value,
-              child: Scaffold(
-                  body: Center(
-                      child: Text(
-                Strings.appName,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold, color: Colors.orange, fontSize: ScalerHelper.getScaledFontSize(26.0)),
-              ))),
-            ));
+            route: state.route?.value,
+            child: Container(alignment: Alignment.bottomCenter, child: CircularProgressIndicator())));
   }
 
   @override

@@ -20,7 +20,6 @@ enum _SplashEvent { checkAuthentication }
 
 class SplashBloc extends Bloc<_SplashEvent, SplashState> {
   final UserRepository _repository = UserRepository();
-  final MeetingRepository _meetingRepository = MeetingRepository();
 
   SplashBloc() {
     _repository.loadDataFromPingBoard();
