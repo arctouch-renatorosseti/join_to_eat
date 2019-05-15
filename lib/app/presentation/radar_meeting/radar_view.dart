@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:join_to_eat/app/bloc/meeting/meeting_bloc.dart';
 import 'package:join_to_eat/app/model/meeting.dart';
+import 'package:join_to_eat/app/presentation/widgets/radar_card.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/ScalerHelper.dart';
-
-import 'widgets/radar_card.dart';
 
 class RadarView extends StatefulWidget {
   @override

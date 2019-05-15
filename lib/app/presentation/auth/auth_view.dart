@@ -5,7 +5,7 @@ import 'package:join_to_eat/app/bloc/auth/auth_bloc.dart';
 import 'package:join_to_eat/app/bloc/auth/auth_event.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/widgets/loading_wrapper.dart';
-import '../map_view.dart';
+import 'package:join_to_eat/app/presentation/map/map_view.dart';
 
 class AuthView extends StatefulWidget {
   @override

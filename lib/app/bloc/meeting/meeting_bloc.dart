@@ -28,7 +28,7 @@ class MeetingBloc extends Bloc<MeetingEvent, MeetingState> {
     switch (event) {
       case MeetingEvent.createMeeting:
         await _repository.insertMeeting(_meeting);
-        yield MeetingState(Routes.listMeetings, true);
+        yield MeetingState("", true);
         break;
       case MeetingEvent.updateMeeting:
         break;
@@ -50,12 +50,6 @@ class MeetingBloc extends Bloc<MeetingEvent, MeetingState> {
   Stream<Iterable<Meeting>> getCurrentMeetings() {
     return _repository.getCurrentMeetings();
   }
-
-  /*
-  void update(Meeting meeting) {
-    _repository.saveMeetingCollection(meeting);
-  }
-  */
 
   onSave(Meeting value) => _meeting = value;
 }

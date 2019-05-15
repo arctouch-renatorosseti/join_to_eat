@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:join_to_eat/app/presentation/auth/auth_view.dart';
-import 'package:join_to_eat/app/presentation/map_view.dart';
-import 'package:join_to_eat/app/presentation/meeting/meeting_details_view.dart';
+import 'package:join_to_eat/app/presentation/map/map_view.dart';
+import 'package:join_to_eat/app/presentation/radar_meeting/meeting_details_view.dart';
 import 'package:join_to_eat/app/presentation/splash/splash_view.dart';
 import 'package:join_to_eat/app/utils/routes.dart';
-
-import 'presentation/create_meeting_view.dart';
+import 'package:join_to_eat/app/presentation/radar_meeting/create_meeting_view.dart';
 import 'package:join_to_eat/app/presentation/quiz/create_quiz_view.dart';
-import 'presentation/list_meetings_view.dart';
-import 'presentation/radar_view.dart';
+import 'package:join_to_eat/app/presentation/radar_meeting/radar_view.dart';
 import 'resources/strings.dart';
 import 'utils/ScalerHelper.dart';
 
@@ -28,7 +26,6 @@ class MainApp extends StatelessWidget {
         Routes.login: (c) => AuthView(),
         Routes.main: (c) => MapView(),
         Routes.createMeeting: (c) => CreateMeetingView(),
-        Routes.listMeetings: (c) => ListMeetingsView(),
         Routes.createQuiz: (c) => CreateQuizView(),
         Routes.radar: (c) => RadarView(),
         Routes.meetingDetails: (c) => MeetingDetailsView(),

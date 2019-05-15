@@ -47,7 +47,7 @@ class _MapViewState extends State<MapView> {
   }
 
   void _onMeetingListButtonPressed() {
-    Navigator.pushNamed(context, Routes.listMeetings);
+
   }
 
   void _onAddQuizButtonPressed() {

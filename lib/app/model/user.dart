@@ -23,7 +23,7 @@ class User extends Equatable {
       lastName: json['last_name'] as String,
       email: json['email'] as String,
       freeTimeText: json['custom_fields']['f58357'] as String,
-      photo: json['avatar_urls']['original'] as String,
+      photo: (json['avatar_urls'] != null) ? json['avatar_urls']['icon'] as String : "",
       interests: json['interests'].cast<String>(),
     );
   }

@@ -22,7 +22,7 @@ class SplashBloc extends Bloc<_SplashEvent, SplashState> {
   final UserRepository _repository = UserRepository();
 
   SplashBloc() {
-    _repository.loadDataFromPingBoard();
+//    _repository.loadDataFromPingBoard();
   }
 
   @override
