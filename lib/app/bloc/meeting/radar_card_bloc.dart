@@ -11,12 +11,13 @@ enum RadarCardEvent { load, joinMeeting, showUsers }
 
 class RadarCardState extends Equatable {
   final String placeName;
+  final String title;
   final String creator;
   final int partySize;
   final DateTime date;
   final int distance;
 
-  RadarCardState({this.placeName = "", this.creator = "", this.partySize = 0, this.date, this.distance = 0})
+  RadarCardState({this.placeName = "", this.title = "", this.creator = "", this.partySize = 0, this.date, this.distance = 0})
       : super([placeName, creator, date]);
 }
 
@@ -87,7 +88,8 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
 
     PlacesDetailsResponse places = await Repository.places.getDetailsByPlaceId(meeting.idMapPlace);
     String title = meeting.description;
-    if (title == null || title.length < 10) {
+    String placeName = places.isOkay ? places.result.name : "";
+    if (title == null || title.isEmpty) {
       if (places.isOkay) title = places.result.name;
     } else {
       title = Strings.radarUntitledEvent;
@@ -95,7 +97,8 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
     loadUsersImage();
 
     return RadarCardState(
-        placeName: title,
+        placeName: placeName,
+        title: title,
         creator: creator,
         partySize: meeting.users.length,
         date: meeting.startTime.toDate(),

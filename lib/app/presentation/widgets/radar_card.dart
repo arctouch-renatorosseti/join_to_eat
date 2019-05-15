@@ -94,7 +94,7 @@ class _RadarCardState extends State<RadarCard> with SingleTickerProviderStateMix
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
                         Text(
-                          state?.placeName ?? Strings.radarLoadingCard,
+                          state?.title ?? Strings.radarLoadingCard,
                           style: titleStyle,
                         ),
                         Row(
