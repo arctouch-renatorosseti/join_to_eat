@@ -155,7 +155,7 @@ class _MapViewState extends State<MapView> {
                           child: Container(
                               decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
                               child: Padding(
-                                  padding: EdgeInsets.all(3.0),
+                                  padding: EdgeInsets.all(2.0),
                                   child: Container(
                                       decoration: BoxDecoration(
                                           shape: BoxShape.circle,
