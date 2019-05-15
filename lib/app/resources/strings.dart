@@ -15,11 +15,15 @@ class Strings {
   static const String submit = 'Submit';
 
   //CREATE MEETING
-  static const String buttonCreateMeeting = "Create";
-  static const String hintMeetingDescription = "Description (Optional)";
-  static const String hintMeetingDuration = "Duration in hours (Default: 1h)";
-  static const String meetingDurationEmpty = "Please enter a duration";
-  static const String meetingDurationInvalid = "Please enter a valid duration between 1 and 24 hours";
+  static const String createMeetingPageTitle = "Event Details";
+  static const String createMeetingDescriptionTitle = "What?";
+  static const String createMeetingWhereTitle = "Where?";
+  static const String createMeetingDurationTitle = "For how long?";
+  static const String createMeetingDescriptionHint = "Description (Optional)";
+  static const String createMeetingDurationHint = "Duration in hours";
+  static const String createMeetingDurationEmpty = "Please enter a duration";
+  static const String createMeetingDurationInvalid = "Please enter a valid duration between 1 and 24 hours";
+  static const String createMeetingButton = "CREATE EVENT";
 
   // MAP
   static const String ratingAbsent = 'No rating available';
