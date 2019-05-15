@@ -47,10 +47,7 @@ class UserRepository extends Repository {
 
   Future<bool> isUserSigned() async {
     bool isUserSaved = false;
-    await _preferencesProvider.getUserSigned().then((onValue) =>
-    isUserSaved = onValue
-        .toString()
-        .isNotEmpty);
+    await _preferencesProvider.getUserSigned().then((onValue) => isUserSaved = onValue.toString().isNotEmpty);
     return await _preferencesProvider.getUserSignedStatus() && isUserSaved;
   }
 
@@ -83,14 +80,12 @@ class MeetingRepository extends Repository {
   }
 
   Stream<Iterable<Meeting>> getCurrentMeetings() {
-    return _firestoreProvider.getCurrentMeetings().map((querySnap) =>
-        querySnap.documents.map((docSnap) =>
-            Meeting(
-                description: docSnap.data["description"],
-                idMapPlace: docSnap.data["idMapPlace"],
-                users: List.from(docSnap.data["users"]),
-                startTime: docSnap.data["startTime"],
-                endTime: docSnap.data["endTime"])));
+    return _firestoreProvider.getCurrentMeetings().map((querySnap) => querySnap.documents.map((docSnap) => Meeting(
+        description: docSnap.data["description"],
+        idMapPlace: docSnap.data["idMapPlace"],
+        users: List.from(docSnap.data["users"]),
+        startTime: docSnap.data["startTime"],
+        endTime: docSnap.data["endTime"])));
   }
 
   Future<String> getSignedUser() async {
@@ -109,7 +104,6 @@ class MeetingRepository extends Repository {
 }
 
 class QuizRepository extends Repository {
-
   Future<void> insertQuiz(Quiz quiz, List<OptionQuiz> options) async {
     List<String> idOptions = [];
     for (OptionQuiz option in options) {

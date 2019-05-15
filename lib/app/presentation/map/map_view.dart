@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
+import 'package:join_to_eat/app/bloc/map/map_bloc.dart';
 import 'package:join_to_eat/app/repository/repository.dart';
 import 'package:join_to_eat/app/resources/images.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
@@ -17,6 +20,8 @@ class MapView extends StatefulWidget {
 }
 
 class _MapViewState extends State<MapView> {
+  final _bloc = MapBloc();
+
   GoogleMapController _controller;
 
   static const double _initialZoom = 16.5;
@@ -36,6 +41,7 @@ class _MapViewState extends State<MapView> {
   @override
   void initState() {
     super.initState();
+    _bloc.dispatch(MapEvent.load);
     _lastMapPosition = _center;
     _setCurrentLocation();
   }
@@ -46,9 +52,7 @@ class _MapViewState extends State<MapView> {
     });
   }
 
-  void _onMeetingListButtonPressed() {
-
-  }
+  void _onMeetingListButtonPressed() {}
 
   void _onAddQuizButtonPressed() {
     Navigator.pushNamed(context, Routes.createQuiz);
@@ -60,6 +64,10 @@ class _MapViewState extends State<MapView> {
 
   void _onRadarButtonPressed() {
     Navigator.pushNamed(context, Routes.radar);
+  }
+
+  void _onMoveToCurrentLocation() {
+    this._moveCamera(_center);
   }
 
   void _onCameraMove(CameraPosition position) {
@@ -114,8 +122,18 @@ class _MapViewState extends State<MapView> {
     return Stack(
       children: <Widget>[
         GoogleMap(
+            circles: {
+              Circle(
+                  circleId: CircleId("location"),
+                  center: _center,
+                  radius: _searchRadius.toDouble(),
+                  fillColor: Color.fromARGB(49, 91, 36, 240),
+                  strokeWidth: 0)
+            },
             onMapCreated: _onMapCreated,
             myLocationEnabled: true,
+            myLocationButtonEnabled: false,
+            compassEnabled: false,
             initialCameraPosition: CameraPosition(target: _center, zoom: _initialZoom - 20.0),
             mapType: _currentMapType,
             markers: _markers,
@@ -124,45 +142,85 @@ class _MapViewState extends State<MapView> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Align(
-            alignment: Alignment.bottomCenter,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: <Widget>[
-                SizedBox(
-                    width: ScalerHelper.getScaleWidth(56.0),
-                    height: ScalerHelper.getScaleHeight(56.0),
-                    child: FloatingActionButton(
-                        heroTag: "meetingListFloating",
-                        onPressed: _onMeetingListButtonPressed,
-                        backgroundColor: Colors.transparent,
-                        child: new ConstrainedBox(
-                          constraints: new BoxConstraints.expand(),
-                          child: new Image(image: AssetImage(Images.FLOATING_ALERTS_LIST)),
-                        ))),
-                SizedBox(
-                    width: ScalerHelper.getScaleWidth(72.0),
-                    height: ScalerHelper.getScaleHeight(72.0),
-                    child: FloatingActionButton(
-                        heroTag: "addQuizFloating",
-                        onPressed: _onAddQuizButtonPressed,
-                        backgroundColor: Colors.transparent,
-                        child: new ConstrainedBox(
-                          constraints: new BoxConstraints.expand(),
-                          child: new Image(image: AssetImage(Images.FLOATING_CALL_PEOPLE)),
-                        ))),
-                SizedBox(
-                    width: ScalerHelper.getScaleWidth(56.0),
-                    height: ScalerHelper.getScaleHeight(56.0),
-                    child: FloatingActionButton(
-                        heroTag: "radarFloating",
-                        onPressed: _onRadarButtonPressed,
-                        backgroundColor: Colors.transparent,
-                        child: new ConstrainedBox(
-                          constraints: new BoxConstraints.expand(),
-                          child: new Image(image: AssetImage(Images.FLOATING_AROUND_ME)),
-                        ))),
-              ],
-            ),
+            child: Column(mainAxisAlignment: MainAxisAlignment.end, children: <Widget>[
+              BlocBuilder(
+                bloc: _bloc,
+                builder: (BuildContext context, MapState state) {
+                  return Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: <Widget>[
+                      SizedBox(
+                          width: ScalerHelper.getScaleWidth(36.0),
+                          height: ScalerHelper.getScaleHeight(36.0),
+                          child: Container(
+                              decoration: BoxDecoration(color: Colors.white, shape: BoxShape.circle),
+                              child: Padding(
+                                  padding: EdgeInsets.all(3.0),
+                                  child: Container(
+                                      decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          image: DecorationImage(
+                                              fit: BoxFit.cover,
+                                              alignment: Alignment.center,
+                                              image: new CachedNetworkImageProvider(state.photo))))))),
+                      SizedBox(
+                          width: ScalerHelper.getScaleWidth(36.0),
+                          height: ScalerHelper.getScaleHeight(36.0),
+                          child: FloatingActionButton(
+                              heroTag: "locationFloating",
+                              elevation: 0.0,
+                              onPressed: _onMoveToCurrentLocation,
+                              backgroundColor: Colors.transparent,
+                              child: new ConstrainedBox(
+                                constraints: new BoxConstraints.expand(),
+                                child: new Image(image: AssetImage(Images.FLOATING_LOCATION)),
+                              ))),
+                    ],
+                  );
+                },
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  SizedBox(
+                      width: ScalerHelper.getScaleWidth(56.0),
+                      height: ScalerHelper.getScaleHeight(56.0),
+                      child: FloatingActionButton(
+                          heroTag: "meetingListFloating",
+                          elevation: 0.0,
+                          onPressed: _onMeetingListButtonPressed,
+                          backgroundColor: Colors.transparent,
+                          child: new ConstrainedBox(
+                            constraints: new BoxConstraints.expand(),
+                            child: new Image(image: AssetImage(Images.FLOATING_ALERTS_LIST)),
+                          ))),
+                  SizedBox(
+                      width: ScalerHelper.getScaleWidth(72.0),
+                      height: ScalerHelper.getScaleHeight(72.0),
+                      child: FloatingActionButton(
+                          heroTag: "addQuizFloating",
+                          elevation: 0.0,
+                          onPressed: _onAddQuizButtonPressed,
+                          backgroundColor: Colors.transparent,
+                          child: new ConstrainedBox(
+                            constraints: new BoxConstraints.expand(),
+                            child: new Image(image: AssetImage(Images.FLOATING_CALL_PEOPLE)),
+                          ))),
+                  SizedBox(
+                      width: ScalerHelper.getScaleWidth(56.0),
+                      height: ScalerHelper.getScaleHeight(56.0),
+                      child: FloatingActionButton(
+                          heroTag: "radarFloating",
+                          elevation: 0.0,
+                          onPressed: _onRadarButtonPressed,
+                          backgroundColor: Colors.transparent,
+                          child: new ConstrainedBox(
+                            constraints: new BoxConstraints.expand(),
+                            child: new Image(image: AssetImage(Images.FLOATING_AROUND_ME)),
+                          ))),
+                ],
+              )
+            ]),
           ),
         ),
       ],
