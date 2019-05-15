@@ -112,11 +112,22 @@ class _MeetingDetailsViewState extends State<MeetingDetailsView> with SingleTick
                         Text('${_bloc.meeting.users.length} ${Strings.alreadyJoined}'),
                         IconButton(
                           icon: Icon(Icons.list),
-                          onPressed: () => {_bloc.dispatch(RadarCardEvent.showUsers)},
+                          onPressed: () => {_bloc.dispatch(RadarCardEvent.showDetails)},
                         ),
                       ],
                     ),
                   ),
+                  SizedBox(
+                    height: 90,
+                    child: ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.meetingUsers.length,
+                      itemBuilder: (BuildContext ctxt, int index) {
+                        Text("User ${state.meetingUsers.first.firstName}");
+                      },
+                    ),
+                  ),
+
                   Divider(
                     indent: 14,
                     color: Colors.grey,

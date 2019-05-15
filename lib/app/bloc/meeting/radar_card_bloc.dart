@@ -7,7 +7,7 @@ import 'package:join_to_eat/app/repository/repository.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:sprintf/sprintf.dart';
 
-enum RadarCardEvent { load, joinMeeting, showUsers }
+enum RadarCardEvent { load, joinMeeting, showDetails }
 
 class RadarCardState extends Equatable {
   final String placeName;
@@ -16,6 +16,7 @@ class RadarCardState extends Equatable {
   final int partySize;
   final DateTime date;
   final int distance;
+  List<User> meetingUsers = List<User>();
 
   RadarCardState({this.placeName = "", this.title = "", this.creator = "", this.partySize = 0, this.date, this.distance = 0})
       : super([placeName, creator, date]);
@@ -24,7 +25,7 @@ class RadarCardState extends Equatable {
 class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
   final _repository = MeetingRepository();
   final Meeting meeting;
-  List<String> photoUsers = List<String>();
+  List<User> meetingUsers = List<User>();
 
   RadarCardBloc({this.meeting});
 
@@ -40,21 +41,23 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
       case RadarCardEvent.joinMeeting:
         yield await joinMeeting();
         break;
-      case RadarCardEvent.showUsers:
-        yield await loadUsersImage();
+      case RadarCardEvent.showDetails:
+        initialState.meetingUsers = meetingUsers;
+        print("State $initialState");
+        yield initialState;
         break;
     }
   }
-  Future<RadarCardState> loadUsersImage() async {
+  Future<void> loadUsersImage() async {
     for(String userId in meeting.users) {
-      _repository.getUser(userId).then((value) => print("Load user ${value}"));
+      _repository.getUser(userId).then((value) => _handleUserPhotosRequest(value));
           //handleUserPhotosRequest(value));
     }
   }
 
-  Future<RadarCardState> handleUserPhotosRequest(User user) {
-    if(!photoUsers.contains(user.photo)) {
-      photoUsers.add(user.photo);
+  void _handleUserPhotosRequest(User user) {
+    if(!meetingUsers.contains(user)) {
+      meetingUsers.add(user);
     }
   }
 
@@ -92,7 +95,7 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
     if (title == null || title.isEmpty) {
       if (places.isOkay) title = places.result.name;
       else title = Strings.radarUntitledEvent;
-    } 
+    }
     loadUsersImage();
 
     return RadarCardState(
