@@ -98,7 +98,7 @@ class _MeetingDetailsViewState extends State<MeetingDetailsView> with SingleTick
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: <Widget>[
                   ListTile(
-                    title: Text('${Strings.lunchAt} ${state.placeName}', style: TextStyle(fontWeight: FontWeight.bold)),
+                    title: Text('${state.title}', style: TextStyle(fontWeight: FontWeight.bold)),
                   ),
                   ListTile(
                     title: Text('${Strings.createdBy}'),
@@ -117,13 +117,12 @@ class _MeetingDetailsViewState extends State<MeetingDetailsView> with SingleTick
                       ],
                     ),
                   ),
-                  SizedBox(
-                    height: 90,
+                  Flexible(
                     child: ListView.builder(
                       scrollDirection: Axis.horizontal,
-                      itemCount: state.meetingUsers.length,
+                      itemCount: _bloc.meetingUsers.length,
                       itemBuilder: (BuildContext ctxt, int index) {
-                        Text("User ${state.meetingUsers.first.firstName}");
+                        Text("User $index");
                       },
                     ),
                   ),

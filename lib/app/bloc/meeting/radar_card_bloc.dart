@@ -16,7 +16,6 @@ class RadarCardState extends Equatable {
   final int partySize;
   final DateTime date;
   final int distance;
-  List<User> meetingUsers = List<User>();
 
   RadarCardState({this.placeName = "", this.title = "", this.creator = "", this.partySize = 0, this.date, this.distance = 0})
       : super([placeName, creator, date]);
@@ -42,9 +41,6 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
         yield await joinMeeting();
         break;
       case RadarCardEvent.showDetails:
-        initialState.meetingUsers = meetingUsers;
-        print("State $initialState");
-        yield initialState;
         break;
     }
   }
