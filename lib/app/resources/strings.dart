@@ -48,4 +48,11 @@ class Strings {
   static const String radarUntitledEvent = "Cool event";
   static const String radarEmpty = "No events planned.";
   static const String radarHappeningNow = "Happening now!";
+
+  // MEETING DETAILS
+  static const String meetingTitle = "Event details";
+  static const String createdBy = "Created by";
+  static const String alreadyJoined = "Already joined";
+  static const String lunchAt = "Lunch at";
+  static const String joinThisEvent = "Join this event";
 }

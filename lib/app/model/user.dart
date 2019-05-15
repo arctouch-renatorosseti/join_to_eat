@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'user.g.dart';
 
 @JsonSerializable()
@@ -9,10 +10,11 @@ class User extends Equatable {
   String firstName;
   String lastName;
   String freeTimeText;
+  String photo;
   List<String> interests;
 
-  User({this.id, this.firstName, this.lastName, this.email, this.freeTimeText, this.interests})
-      : super([id, firstName, lastName, email, freeTimeText]);
+  User({this.id, this.firstName, this.lastName, this.email, this.freeTimeText, this.photo, this.interests})
+      : super([id, firstName, lastName, email, freeTimeText, photo, interests]);
 
   factory User.fromJsonFile(Map<String, dynamic> json) {
     return User(
@@ -21,6 +23,7 @@ class User extends Equatable {
       lastName: json['last_name'] as String,
       email: json['email'] as String,
       freeTimeText: json['custom_fields']['f58357'] as String,
+      photo: json['avatar_urls']['original'] as String,
       interests: json['interests'].cast<String>(),
     );
   }

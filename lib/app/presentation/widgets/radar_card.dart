@@ -65,78 +65,92 @@ class _RadarCardState extends State<RadarCard> with SingleTickerProviderStateMix
     final locale = Localizations.localeOf(context).toString();
 
     return BlocBuilder(
-        bloc: _bloc,
-        builder: (BuildContext context, RadarCardState state) {
-          String whenText = "";
-          String happeningNow = "";
+      bloc: _bloc,
+      builder: (BuildContext context, RadarCardState state) {
+        String whenText = "";
+        String happeningNow = "";
 
-          if (state.date != null) {
-            if (state.date.isBefore(DateTime.now())) {
-              happeningNow = Strings.radarHappeningNow;
-            }
-
-            whenText = DateFormat.yMd(locale).format(state.date);
+        if (state.date != null) {
+          if (state.date.isBefore(DateTime.now())) {
+            happeningNow = Strings.radarHappeningNow;
           }
 
-          return Container(
-              transform: _animation.value,
-              child: Card(
-                  margin: outCardMargin,
-                  child: Padding(
-                      padding: inCardMargin,
-                      child: InkWell(
-                          onTap: () {
-                            _onCardTapped();
-                          },
-                          child: Row(
-                            children: <Widget>[
-                              Column(crossAxisAlignment: CrossAxisAlignment.start, children: <Widget>[
-                                Text(
-                                  state?.title ?? Strings.radarLoadingCard,
-                                  style: titleStyle,
-                                ),
-                                Row(
-                                  children: <Widget>[
-                                    Opacity(
-                                        opacity: 0.5,
-                                        child: Text(
-                                          Strings.radarCreator,
-                                          style: infoStyle,
-                                        )),
-                                    Text(
-                                      state?.creator ?? Strings.radarLoadingCard,
-                                      style: infoStyle,
-                                    )
-                                  ],
-                                ),
-                                Padding(
-                                    padding: EdgeInsets.only(top: ScalerHelper.getScaledValue(7.0)),
-                                    child: Text(
-                                      sprintf(Strings.radarPartySize, [state?.partySize]),
-                                      style: infoStyle,
-                                    )),
-                              ]),
-                              Expanded(
-                                  child: Column(crossAxisAlignment: CrossAxisAlignment.end, children: <Widget>[
-                                Padding(
-                                    padding: EdgeInsets.only(bottom: ScalerHelper.getScaledValue(11.0)),
-                                    child: Text(
-                                      whenText,
-                                      style: dateStyle,
-                                    )),
-                                Text(
-                                  //TODO: Calculate distance and then use this: state.distance == 0 ? "" : sprintf(Strings.radarDistance, [state.distance]),
-                                  happeningNow,
-                                  style: distanceStyle,
-                                ),
-                              ])),
-                            ],
-                          )))));
-        });
+          whenText = DateFormat.yMd(locale).format(state.date);
+        }
+
+        return Container(
+          transform: _animation.value,
+          child: Card(
+            margin: outCardMargin,
+            child: Padding(
+              padding: inCardMargin,
+              child: InkWell(
+                onTap: () {
+                  _onCardTapped();
+                },
+                child: Row(
+                  children: <Widget>[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        Text(
+                          state?.placeName ?? Strings.radarLoadingCard,
+                          style: titleStyle,
+                        ),
+                        Row(
+                          children: <Widget>[
+                            Opacity(
+                              opacity: 0.5,
+                              child: Text(
+                                Strings.radarCreator,
+                                style: infoStyle,
+                              ),
+                            ),
+                            Text(
+                              state?.creator ?? Strings.radarLoadingCard,
+                              style: infoStyle,
+                            ),
+                          ],
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(top: ScalerHelper.getScaledValue(7.0)),
+                          child: Text(
+                            sprintf(Strings.radarPartySize, [state?.partySize]),
+                            style: infoStyle,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: <Widget>[
+                          Padding(
+                            padding: EdgeInsets.only(bottom: ScalerHelper.getScaledValue(11.0)),
+                            child: Text(
+                              whenText,
+                              style: dateStyle,
+                            ),
+                          ),
+                          Text(
+                            //TODO: Calculate distance and then use this: state.distance == 0 ? "" : sprintf(Strings.radarDistance, [state.distance]),
+                            happeningNow,
+                            style: distanceStyle,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 
   _onCardTapped() {
-    print('Card tapped');
-    Navigator.pushNamed(context, Routes.meetingDetails);
+    Navigator.pushNamed(context, Routes.meetingDetails, arguments: _bloc);
   }
 }

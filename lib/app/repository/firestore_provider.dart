@@ -6,14 +6,14 @@ import 'package:join_to_eat/app/model/quiz.dart';
 class FirestoreProvider {
   static const String COLLECTION_USERS = "users";
   static const String COLLECTION_MEETINGS = "meetings";
-  static const String COLLECTION_QUIZ= "quiz";
-  static const String COLLECTION_OPTION_QUIZ= "option_quiz";
+  static const String COLLECTION_QUIZ = "quiz";
+  static const String COLLECTION_OPTION_QUIZ = "option_quiz";
 
   Firestore _firestore = Firestore.instance;
 
   Future<void> insertMeeting(Meeting meeting) async {
-    _firestore.collection(COLLECTION_QUIZ).add({
-      "question": meeting.description,
+    _firestore.collection(COLLECTION_MEETINGS).add({
+      "description": meeting.description,
       "idMapPlace": meeting.idMapPlace,
       "users": meeting.users,
       "startTime": meeting.startTime,
@@ -22,21 +22,29 @@ class FirestoreProvider {
   }
 
   Future<void> insertQuiz(Quiz quiz) async {
-    _firestore.collection(COLLECTION_QUIZ).add({
-      "question": quiz.question,
-      "id_options": quiz.answersOptions
-    });
+    _firestore.collection(COLLECTION_QUIZ).add({"question": quiz.question, "id_options": quiz.answersOptions});
   }
 
   Future<DocumentReference> insertOptionQuiz(OptionQuiz option) async {
-    return _firestore.collection(COLLECTION_OPTION_QUIZ).add({
-      "selected_times": option.selectedTimes,
-      "answer": option.answer
-    });
+    return _firestore
+        .collection(COLLECTION_OPTION_QUIZ)
+        .add({"selected_times": option.selectedTimes, "answer": option.answer});
   }
 
-  void updateMeetingCollection(Map<String, dynamic> data, String id) {
-    _firestore.collection(COLLECTION_MEETINGS).document(id).updateData({'meeting': data, 'merge': true});
+  Future<void> updateMeetingCollection(Meeting meeting) async {
+    _firestore
+        .collection(COLLECTION_MEETINGS)
+        .where("description", isEqualTo: meeting.description)
+        .where("idMapPlace", isEqualTo: meeting.idMapPlace)
+        .snapshots()
+        .listen((onData) =>
+            _firestore.collection(COLLECTION_MEETINGS).document(onData.documents.first.documentID).updateData({
+              "description": meeting.description,
+              "idMapPlace": meeting.idMapPlace,
+              "users": meeting.users,
+              "startTime": meeting.startTime,
+              "endTime": meeting.endTime,
+            }));
   }
 
   Stream<QuerySnapshot> getCurrentMeetings() {

@@ -1,89 +1,162 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:join_to_eat/app/bloc/meeting/meeting_bloc.dart';
+import 'package:join_to_eat/app/bloc/meeting/radar_card_bloc.dart';
 import 'package:join_to_eat/app/model/meeting.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
+import 'package:join_to_eat/app/utils/ScalerHelper.dart';
 
 class MeetingDetailsView extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => _MeetingDetailsViewState();
 }
 
-class _MeetingDetailsViewState extends State<MeetingDetailsView> {
+class _MeetingDetailsViewState extends State<MeetingDetailsView> with SingleTickerProviderStateMixin {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  final _bloc = MeetingBloc();
-  final Meeting _meeting = Meeting();
+
+  RadarCardBloc _bloc;
+  final _appForegroundColor = Colors.white;
+  final _circleColor = Color.fromARGB(255, 91, 36, 240);
+  Animation circleAnimation;
+  AnimationController circleController;
 
   @override
   void initState() {
     super.initState();
 
-    setupData();
+    circleController = AnimationController(duration: const Duration(milliseconds: 1500), vsync: this);
+
+    circleAnimation =
+        Matrix4Tween(begin: Matrix4.translationValues(0, -950, 0), end: Matrix4.translationValues(0, -30, 0))
+            .animate(CurvedAnimation(parent: circleController, curve: Curves.elasticOut))
+              ..addListener(() {
+                setState(() {});
+              });
+
+    circleController.forward();
+  }
+
+  @override
+  void dispose() {
+    circleController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final PlacesSearchResult place = ModalRoute.of(context).settings.arguments;
-
+    _bloc = ModalRoute.of(context).settings.arguments;
     return Scaffold(
-      appBar: AppBar(),
-      body: Container(
-        padding: EdgeInsets.all(90.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: <Widget>[
-            ListTile(
-              title: Text('Lunch at Madero'),
-            ),
-            ListTile(
-              title: Text('Create by'),
-              subtitle: Text('Joao da Silva'),
-            ),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text('12 already joined'),
-                Icon(Icons.list),
-              ],
-            ),
-            Divider(
-              color: Colors.grey,
-              height: 1,
-            ),
-            ListTile(
-              title: Text('Madero Container'),
-              subtitle: Text('Rod SC 401 km 4 - Saco Grande,\nFlorianópolis-SC'),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                RaisedButton(
-                  onPressed: () {},
-                  child: Text('JOIN THIS EVENT'),
-                ),
-              ],
-            ),
-
-
-          ],
-        ),
+      backgroundColor: _circleColor,
+      appBar: AppBar(
+        elevation: 0.0,
+        iconTheme: IconThemeData(color: _appForegroundColor),
+        title: Text(Strings.meetingTitle, style: TextStyle(color: _appForegroundColor)),
+        backgroundColor: _circleColor,
       ),
+      body: _buildMeetingDetailsFrame(),
     );
   }
 
-  void setupData() async {
-    _meeting.users.add(await _bloc.getSignedUser());
+  Widget _buildMeetingDetailsFrame() {
+    return Stack(
+      children: <Widget>[
+        Positioned.fill(
+            child: UnconstrainedBox(
+          alignment: Alignment.center,
+          child: Container(
+            width: 620,
+            height: 620,
+            padding: EdgeInsets.zero,
+            margin: EdgeInsets.zero,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _circleColor,
+            ),
+            transform: circleAnimation.value,
+          ),
+        )),
+        Positioned.fill(
+          child: _buildDetailsMeeting(),
+        )
+      ],
+    );
   }
 
-  Future<void> _onCreateMeetingButtonPressed() async {
-    if (_formKey.currentState.validate()) {
-      _formKey.currentState.save();
-      _bloc.dispatch(MeetingEvent.createMeeting);
-
-      Navigator.pop(context);
-    }
+  Widget _buildDetailsMeeting() {
+    return
+      Container(
+      transform: circleAnimation.value,
+      padding: EdgeInsets.all(60.0),
+      child: BlocBuilder<RadarCardEvent, RadarCardState>(
+        bloc: _bloc,
+        builder: (context, state) => Container(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  ListTile(
+                    title: Text('${Strings.lunchAt} ${state.placeName}', style: TextStyle(fontWeight: FontWeight.bold)),
+                  ),
+                  ListTile(
+                    title: Text('${Strings.createdBy}'),
+                    subtitle: Text(state.creator),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.all(14),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Text('${_bloc.meeting.users.length} ${Strings.alreadyJoined}'),
+                        IconButton(
+                          icon: Icon(Icons.list),
+                          onPressed: () => {_bloc.dispatch(RadarCardEvent.showUsers)},
+                        ),
+                      ],
+                    ),
+                  ),
+                  Divider(
+                    indent: 14,
+                    color: Colors.grey,
+                    height: 1,
+                  ),
+                  Column(
+                    children: <Widget>[
+                      Padding(
+                        padding: EdgeInsets.only(left: 16, right: 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Text(state.placeName, style: TextStyle(fontWeight: FontWeight.bold)),
+                            Icon(Icons.location_on),
+                          ],
+                        ),
+                      ),
+                      ListTile(
+                        subtitle: Text('Rod SC 401 km 4 - Saco Grande,\nFlorianópolis-SC'),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      RaisedButton(
+                        padding: EdgeInsets.only(left: 60, right: 60, top: 10, bottom: 10),
+                        color: _circleColor,
+                        textColor: Colors.white,
+                        onPressed: () {
+                          _bloc.dispatch(RadarCardEvent.joinMeeting);
+                        },
+                        child: Text('${Strings.joinThisEvent}'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+      ),
+    );
   }
 }

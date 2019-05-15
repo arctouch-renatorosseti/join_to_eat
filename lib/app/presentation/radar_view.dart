@@ -48,7 +48,6 @@ class _RadarViewState extends State<RadarView> with SingleTickerProviderStateMix
           elevation: 0.0,
           iconTheme: IconThemeData(color: _appForegroundColor),
           title: Text(Strings.radarTitle, style: TextStyle(color: _appForegroundColor)),
-          toolbarOpacity: 0.0,
           backgroundColor: _circleColor,
         ),
         body: _buildMeetingsList());

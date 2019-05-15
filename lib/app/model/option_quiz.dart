@@ -10,7 +10,7 @@ class OptionQuiz extends Equatable {
       : super([answer, selectedTimes]) {
   }
 
-  factory OptionQuiz.fromJson(Map<String, dynamic> json) => _$OptionsQuizFromJson(json);
+  factory OptionQuiz.fromJson(Map<String, dynamic> json) => _$OptionQuizFromJson(json);
 
-  Map<String, dynamic> toJson() => _$OptionsQuizToJson(this);
+  Map<String, dynamic> toJson() => _$OptionQuizToJson(this);
 }

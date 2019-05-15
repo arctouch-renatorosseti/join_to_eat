@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -11,7 +10,6 @@ import 'package:join_to_eat/app/model/user.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
 import 'package:join_to_eat/app/repository/preferences_provider.dart';
 import 'package:join_to_eat/app/resources/constants.dart';
-
 import 'firestore_provider.dart';
 
 class Repository {
@@ -81,7 +79,7 @@ class MeetingRepository extends Repository {
   }
 
   void updateMeetingCollection(Meeting meeting) {
-//    _firestoreProvider.updateMeetingCollection(meeting, meeting.id);
+    _firestoreProvider.updateMeetingCollection(meeting);
   }
 
   Stream<Iterable<Meeting>> getCurrentMeetings() {

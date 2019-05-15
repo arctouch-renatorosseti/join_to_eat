@@ -6,12 +6,12 @@ part of 'option_quiz.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-OptionQuiz _$OptionsQuizFromJson(Map<String, dynamic> json) {
+OptionQuiz _$OptionQuizFromJson(Map<String, dynamic> json) {
   return OptionQuiz(
       answer: json['answer'], selectedTimes: json['selectedTimes']);
 }
 
-Map<String, dynamic> _$OptionsQuizToJson(OptionQuiz instance) =>
+Map<String, dynamic> _$OptionQuizToJson(OptionQuiz instance) =>
     <String, dynamic>{
       'answer': instance.answer,
       'selectedTimes': instance.selectedTimes
