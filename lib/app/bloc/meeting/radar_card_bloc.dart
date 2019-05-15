@@ -91,9 +91,8 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
     String placeName = places.isOkay ? places.result.name : "";
     if (title == null || title.isEmpty) {
       if (places.isOkay) title = places.result.name;
-    } else {
-      title = Strings.radarUntitledEvent;
-    }
+      else title = Strings.radarUntitledEvent;
+    } 
     loadUsersImage();
 
     return RadarCardState(
