@@ -6,6 +6,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:join_to_eat/app/bloc/meeting/meeting_bloc.dart';
 import 'package:join_to_eat/app/bloc/meeting/radar_card_bloc.dart';
 import 'package:join_to_eat/app/model/meeting.dart';
+import 'package:join_to_eat/app/model/user.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/ScalerHelper.dart';
 
@@ -86,8 +87,7 @@ class _MeetingDetailsViewState extends State<MeetingDetailsView> with SingleTick
   }
 
   Widget _buildDetailsMeeting() {
-    return
-      Container(
+    return Container(
       transform: circleAnimation.value,
       padding: EdgeInsets.all(60.0),
       child: BlocBuilder<RadarCardEvent, RadarCardState>(
@@ -105,7 +105,7 @@ class _MeetingDetailsViewState extends State<MeetingDetailsView> with SingleTick
                     subtitle: Text(state.creator),
                   ),
                   Padding(
-                    padding: EdgeInsets.all(14),
+                    padding: EdgeInsets.only(left: 14, right: 14),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -117,16 +117,13 @@ class _MeetingDetailsViewState extends State<MeetingDetailsView> with SingleTick
                       ],
                     ),
                   ),
-                  Flexible(
-                    child: ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: _bloc.meetingUsers.length,
-                      itemBuilder: (BuildContext ctxt, int index) {
-                        Text("User $index");
-                      },
+                  Padding(
+                    padding: EdgeInsets.only(left: 14, right: 14),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: _getAvatarProfiles(),
                     ),
                   ),
-
                   Divider(
                     indent: 14,
                     color: Colors.grey,
@@ -168,5 +165,24 @@ class _MeetingDetailsViewState extends State<MeetingDetailsView> with SingleTick
             ),
       ),
     );
+  }
+
+  List<Widget> _getAvatarProfiles() {
+    List<Widget> widgets = List<Widget>();
+    for (User user in _bloc.meetingUsers) {
+      if (user.photo.isNotEmpty) {
+        var widget = CircleAvatar(
+          backgroundImage: NetworkImage(user.photo),
+        );
+        widgets.add(Padding(padding: EdgeInsets.only(right: 4),child: widget));
+      } else {
+        var widget = CircleAvatar(
+          backgroundColor: _circleColor,
+          child: Text(user.firstName.substring(0, 1)),
+        );
+        widgets.add(Padding(padding: EdgeInsets.only(right: 4),child: widget));
+      }
+    }
+    return widgets;
   }
 }
