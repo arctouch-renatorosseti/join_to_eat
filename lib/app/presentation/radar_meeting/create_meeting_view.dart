@@ -72,6 +72,12 @@ class _CreateMeetingViewState extends State<CreateMeetingView> with SingleTicker
   }
 
   @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final PlacesSearchResult place = ModalRoute.of(context).settings.arguments;
 
