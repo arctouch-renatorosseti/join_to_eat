@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:join_to_eat/app/bloc/meeting/radar_card_bloc.dart';
-import 'package:join_to_eat/app/model/user.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:join_to_eat/app/utils/ScalerHelper.dart';
 
@@ -12,8 +11,6 @@ class MeetingDetailsView extends StatefulWidget {
 }
 
 class _MeetingDetailsViewState extends State<MeetingDetailsView> with SingleTickerProviderStateMixin {
-  //final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
   final TextStyle styleCommonTitle = TextStyle(
       color: const Color(0xff000000),
       fontWeight: FontWeight.w400,
@@ -169,7 +166,7 @@ class _MeetingDetailsViewState extends State<MeetingDetailsView> with SingleTick
                             ])),
                         subtitle: Row(
                           mainAxisAlignment: MainAxisAlignment.start,
-                          children: _getAvatarProfiles(),
+                          children: _getAvatarProfiles(state.partyPhotos),
                         ),
                       ),
                       ListTile(
@@ -197,43 +194,54 @@ class _MeetingDetailsViewState extends State<MeetingDetailsView> with SingleTick
                           ],
                         ),
                       ),
+                      _getButtons(state)
                     ],
                   ),
                 ),
           ), // Blockbuilder
-          Align(
-              alignment: Alignment.bottomCenter,
-              child: SizedBox(
-                  width: double.infinity,
-                  child: RaisedButton(
-                    color: _circleColor,
-                    shape:
-                        RoundedRectangleBorder(borderRadius: BorderRadius.circular(ScalerHelper.getScaledValue(6.0))),
-                    textColor: Colors.white,
-                    child: Text(Strings.joinThisEvent),
-                    onPressed: () {
-                      _bloc.dispatch(RadarCardEvent.joinMeeting);
-                    },
-                  ))),
         ]));
   }
 
-  List<Widget> _getAvatarProfiles() {
+  Widget _getButtons(RadarCardState state) {
+    if (state.isCreator) return Container();
+
+    return Align(
+        alignment: Alignment.bottomCenter,
+        child: SizedBox(
+            width: double.infinity,
+            child: RaisedButton(
+              color: state.hasJoined ? Colors.red : _circleColor,
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(ScalerHelper.getScaledValue(6.0))),
+              textColor: Colors.white,
+              child: Text(state.hasJoined ? Strings.leaveThisEvent : Strings.joinThisEvent),
+              onPressed: () {
+                _bloc.dispatch(RadarCardEvent.joinMeeting);
+              },
+            )));
+  }
+
+  List<Widget> _getAvatarProfiles(List<String> photosUrls) {
     List<Widget> widgets = List<Widget>();
-    for (User user in _bloc.meetingUsers) {
-      if (user.photo.isNotEmpty) {
-        var widget = CircleAvatar(
-          backgroundImage: NetworkImage(user.photo),
+
+    if (photosUrls == null || photosUrls.isEmpty) {
+      widgets.add(Container());
+    } else {
+      for (String photo in photosUrls) {
+        Widget widget = CircleAvatar(
+          backgroundImage: NetworkImage(photo),
         );
-        widgets.add(Padding(padding: EdgeInsets.only(right: 0), child: widget));
-      } else {
-        var widget = CircleAvatar(
+
+        /* Not for us right now... maybe in the future?
+        widget = CircleAvatar(
           backgroundColor: _circleColor,
           child: Text(user.firstName.substring(0, 1)),
         );
+        */
+
         widgets.add(Padding(padding: EdgeInsets.only(right: 0), child: widget));
       }
+
+      return widgets;
     }
-    return widgets;
   }
 }

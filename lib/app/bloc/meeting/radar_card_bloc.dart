@@ -14,26 +14,31 @@ class RadarCardState extends Equatable {
   final String title;
   final String creator;
   final int partySize;
+  final List<String> partyPhotos;
   final DateTime date;
   final int distance;
   final String address;
+  final bool isCreator;
+  final bool hasJoined;
 
   RadarCardState(
       {this.placeName = "",
       this.title = "",
       this.creator = "",
       this.partySize = 0,
+      this.partyPhotos,
       this.date,
       this.distance = 0,
-      this.address = ""})
-      : super([placeName, creator, date, address]);
+      this.address = "",
+      this.isCreator = false,
+      this.hasJoined = false})
+      : super([placeName, title, creator, partySize, date, distance, address, isCreator, hasJoined]);
 }
 
 class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
   final _repository = MeetingRepository();
 
   Meeting meeting;
-  List<User> meetingUsers = List<User>();
   String currentUser;
 
   RadarCardBloc({this.meeting});
@@ -45,8 +50,9 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
   Stream<RadarCardState> mapEventToState(RadarCardEvent event) async* {
     switch (event) {
       case RadarCardEvent.startStream:
-        _repository.getMeeting(this.meeting).listen((meeting) => _consumeStream(meeting), onDone: _onDone);
         currentUser = await _repository.getSignedUser();
+
+        _repository.getMeeting(this.meeting).listen((meeting) => _consumeStream(meeting));
         break;
       case RadarCardEvent.load:
         yield await loadData();
@@ -62,28 +68,12 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
     this.dispatch(RadarCardEvent.load);
   }
 
-  Future<void> loadUsersImage() async {
-    for (String userId in meeting.users) {
-      _repository.getUser(userId).then((value) => _handleUserPhotosRequest(value));
-    }
-  }
-
-  void _handleUserPhotosRequest(User user) {
-    if (!meetingUsers.contains(user)) {
-      meetingUsers.add(user);
-    }
-  }
-
   Future<RadarCardState> joinMeeting() async {
     List<String> users = meeting.users;
 
-    await _toggleJoin(users, user);
+    await _toggleJoin(users, currentUser);
 
     return await loadData();
-  }
-
-  bool hasJoined() {
-    return meetingUsers.contains(user);
   }
 
   Future<void> _toggleJoin(List<String> users, String loggedUserId) async {
@@ -99,13 +89,25 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
   }
 
   Future<RadarCardState> loadData() async {
+    bool isCreator = false;
     String creator = Strings.radarNoCreator;
 
-    if (meeting.users.isNotEmpty) {
-      User user = await _repository.getUser(meeting.users[0]);
+    List<String> partyPhotos = List<String>();
+
+    bool isFirstUser = true;
+    for (String userId in meeting.users) {
+      User user = await _repository.getUser(userId);
 
       if (user != null) {
-        creator = sprintf("%s %s", [user.firstName, user.lastName]);
+        if (isFirstUser) {
+          isCreator = currentUser == userId;
+          creator = sprintf("%s %s", [user.firstName, user.lastName]);
+          isFirstUser = false;
+        }
+
+        if (user.photo != null && user.photo.isNotEmpty) {
+          partyPhotos.add(user.photo);
+        }
       }
     }
 
@@ -120,15 +122,16 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
         title = Strings.radarUntitledEvent;
     }
 
-    loadUsersImage();
-
     return RadarCardState(
         placeName: placeName,
         title: title,
         creator: creator,
         partySize: meeting.users.length,
+        partyPhotos: partyPhotos,
         date: meeting.startTime.toDate(),
         distance: 0, // TODO : distance
-        address: address);
+        address: address,
+        isCreator: isCreator,
+        hasJoined: meeting.users.indexOf(currentUser) > 0);
   }
 }

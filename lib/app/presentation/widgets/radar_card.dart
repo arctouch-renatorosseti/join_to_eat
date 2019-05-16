@@ -151,6 +151,7 @@ class _RadarCardState extends State<RadarCard> with SingleTickerProviderStateMix
   }
 
   _onCardTapped() {
+    _bloc.dispatch(RadarCardEvent.startStream);
     Navigator.pushNamed(context, Routes.meetingDetails, arguments: _bloc);
   }
 }
