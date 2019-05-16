@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
 import 'package:google_maps_webservice/places.dart';
@@ -10,6 +11,7 @@ import 'package:join_to_eat/app/model/user.dart';
 import 'package:join_to_eat/app/model/users_list.dart';
 import 'package:join_to_eat/app/repository/preferences_provider.dart';
 import 'package:join_to_eat/app/resources/constants.dart';
+
 import 'firestore_provider.dart';
 
 class Repository {
@@ -72,20 +74,19 @@ class UserRepository extends Repository {
 
 class MeetingRepository extends Repository {
   Future<void> insertMeeting(Meeting meeting) async {
-    await _firestoreProvider.insertMeeting(meeting);
+    meeting.reference = await _firestoreProvider.insertMeeting(meeting);
   }
 
-  void updateMeetingCollection(Meeting meeting) {
-    _firestoreProvider.updateMeetingCollection(meeting);
+  Future<void> updateMeetingCollection(Meeting meeting) async {
+    await _firestoreProvider.updateMeeting(meeting);
   }
 
   Stream<Iterable<Meeting>> getCurrentMeetings() {
-    return _firestoreProvider.getCurrentMeetings().map((querySnap) => querySnap.documents.map((docSnap) => Meeting(
-        description: docSnap.data["description"],
-        idMapPlace: docSnap.data["idMapPlace"],
-        users: List.from(docSnap.data["users"]),
-        startTime: docSnap.data["startTime"],
-        endTime: docSnap.data["endTime"])));
+    return _firestoreProvider.getCurrentMeetings();
+  }
+
+  Stream<Meeting> getMeeting(Meeting meeting) {
+    return _firestoreProvider.getMeeting(meeting);
   }
 
   Future<String> getSignedUser() async {

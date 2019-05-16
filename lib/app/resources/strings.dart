@@ -59,4 +59,5 @@ class Strings {
   static const String alreadyJoined = "Already joined";
   static const String lunchAt = "Lunch at";
   static const String joinThisEvent = "JOIN THIS EVENT";
+  static const String leaveThisEvent = "LEAVE THIS EVENT";
 }
