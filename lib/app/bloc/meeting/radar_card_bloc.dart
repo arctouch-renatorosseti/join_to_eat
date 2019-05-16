@@ -7,7 +7,7 @@ import 'package:join_to_eat/app/repository/repository.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:sprintf/sprintf.dart';
 
-enum RadarCardEvent { load, joinMeeting, showDetails }
+enum RadarCardEvent { load, joinMeeting }
 
 class RadarCardState extends Equatable {
   final String placeName;
@@ -16,9 +16,17 @@ class RadarCardState extends Equatable {
   final int partySize;
   final DateTime date;
   final int distance;
+  final String address;
 
-  RadarCardState({this.placeName = "", this.title = "", this.creator = "", this.partySize = 0, this.date, this.distance = 0})
-      : super([placeName, creator, date]);
+  RadarCardState(
+      {this.placeName = "",
+      this.title = "",
+      this.creator = "",
+      this.partySize = 0,
+      this.date,
+      this.distance = 0,
+      this.address = ""})
+      : super([placeName, creator, date, address]);
 }
 
 class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
@@ -40,31 +48,29 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
       case RadarCardEvent.joinMeeting:
         yield await joinMeeting();
         break;
-      case RadarCardEvent.showDetails:
-        break;
     }
   }
+
   Future<void> loadUsersImage() async {
-    for(String userId in meeting.users) {
+    for (String userId in meeting.users) {
       _repository.getUser(userId).then((value) => _handleUserPhotosRequest(value));
-          //handleUserPhotosRequest(value));
     }
   }
 
   void _handleUserPhotosRequest(User user) {
-    if(!meetingUsers.contains(user)) {
+    if (!meetingUsers.contains(user)) {
       meetingUsers.add(user);
     }
   }
 
   Future<RadarCardState> joinMeeting() async {
     List<String> users = meeting.users;
-    _repository.getSignedUser().then((onValue) => handleUpdateMeeting(users, onValue)).whenComplete(() => RadarCardState(
-    placeName: meeting.description,
-    creator: meeting.users.first,
-    partySize: meeting.users.length,
-    date: meeting.startTime.toDate(),
-    distance: 0)  );
+
+    var user = await _repository.getSignedUser();
+
+    handleUpdateMeeting(users, user);
+
+    return await loadData();
   }
 
   Future<void> handleUpdateMeeting(List<String> users, String loggedUserId) async {
@@ -88,9 +94,12 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
     PlacesDetailsResponse places = await Repository.places.getDetailsByPlaceId(meeting.idMapPlace);
     String title = meeting.description;
     String placeName = places.isOkay ? places.result.name : "";
+    String address = places.isOkay ? places.result.vicinity : "";
     if (title == null || title.isEmpty) {
-      if (places.isOkay) title = places.result.name;
-      else title = Strings.radarUntitledEvent;
+      if (places.isOkay)
+        title = places.result.name;
+      else
+        title = Strings.radarUntitledEvent;
     }
     loadUsersImage();
 
@@ -100,6 +109,7 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
         creator: creator,
         partySize: meeting.users.length,
         date: meeting.startTime.toDate(),
-        distance: 0); // TODO : distance
+        distance: 0, // TODO : distance
+        address: address);
   }
 }
