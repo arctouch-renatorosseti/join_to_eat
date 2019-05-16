@@ -104,7 +104,7 @@ class _MeetingDetailsViewState extends State<MeetingDetailsView> with SingleTick
     return Container(
         transform: _animation.value,
         decoration: BoxDecoration(
-            color: Colors.white, //border: Border.all(color: Colors.black, width: 1.0, style: BorderStyle.solid)
+            color: Colors.white,
             borderRadius: BorderRadius.all(Radius.circular(ScalerHelper.getScaledValue(16.0))),
             boxShadow: [
               BoxShadow(

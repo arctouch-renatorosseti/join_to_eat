@@ -7,7 +7,7 @@ import 'package:join_to_eat/app/repository/repository.dart';
 import 'package:join_to_eat/app/resources/strings.dart';
 import 'package:sprintf/sprintf.dart';
 
-enum RadarCardEvent { load, joinMeeting }
+enum RadarCardEvent { startStream, load, joinMeeting }
 
 class RadarCardState extends Equatable {
   final String placeName;
@@ -31,8 +31,10 @@ class RadarCardState extends Equatable {
 
 class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
   final _repository = MeetingRepository();
-  final Meeting meeting;
+
+  Meeting meeting;
   List<User> meetingUsers = List<User>();
+  String currentUser;
 
   RadarCardBloc({this.meeting});
 
@@ -42,6 +44,10 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
   @override
   Stream<RadarCardState> mapEventToState(RadarCardEvent event) async* {
     switch (event) {
+      case RadarCardEvent.startStream:
+        _repository.getMeeting(this.meeting).listen((meeting) => _consumeStream(meeting), onDone: _onDone);
+        currentUser = await _repository.getSignedUser();
+        break;
       case RadarCardEvent.load:
         yield await loadData();
         break;
@@ -49,6 +55,11 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
         yield await joinMeeting();
         break;
     }
+  }
+
+  void _consumeStream(Meeting meeting) {
+    this.meeting = meeting;
+    this.dispatch(RadarCardEvent.load);
   }
 
   Future<void> loadUsersImage() async {
@@ -66,18 +77,25 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
   Future<RadarCardState> joinMeeting() async {
     List<String> users = meeting.users;
 
-    var user = await _repository.getSignedUser();
-
-    handleUpdateMeeting(users, user);
+    await _toggleJoin(users, user);
 
     return await loadData();
   }
 
-  Future<void> handleUpdateMeeting(List<String> users, String loggedUserId) async {
+  bool hasJoined() {
+    return meetingUsers.contains(user);
+  }
+
+  Future<void> _toggleJoin(List<String> users, String loggedUserId) async {
     if (!users.contains(loggedUserId)) {
       meeting.users.add(loggedUserId);
-      _repository.updateMeetingCollection(meeting);
+    } else {
+      meeting.users.remove(loggedUserId);
     }
+
+    await _repository.updateMeetingCollection(meeting);
+
+    return await loadData();
   }
 
   Future<RadarCardState> loadData() async {
@@ -101,6 +119,7 @@ class RadarCardBloc extends Bloc<RadarCardEvent, RadarCardState> {
       else
         title = Strings.radarUntitledEvent;
     }
+
     loadUsersImage();
 
     return RadarCardState(
